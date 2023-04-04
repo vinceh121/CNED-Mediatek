@@ -3,21 +3,21 @@ using Gtk;
 
 namespace project
 {
-    class Program
-    {
-        [STAThread]
-        public static void Main(string[] args)
-        {
-            Application.Init();
+	class Program
+	{
+		[STAThread]
+		public static void Main(string[] args)
+		{
+			Application.Init();
 
-            var app = new Application("me.vinceh121.mediatek", GLib.ApplicationFlags.None);
-            app.Register(GLib.Cancellable.Current);
+			Application app = new Application("me.vinceh121.mediatek", GLib.ApplicationFlags.None);
+			app.Register(GLib.Cancellable.Current);
 
-            var win = new MainWindow();
-            app.AddWindow(win);
+			MainWindow win = new MainWindow();
+			app.AddWindow(win);
 
-            win.Show();
-            Application.Run();
-        }
-    }
+			win.Show();
+			Application.Run();
+		}
+	}
 }
