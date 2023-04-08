@@ -1,5 +1,7 @@
 using System;
+using System.Threading.Tasks;
 using Gtk;
+using MySqlConnector;
 
 namespace project
 {
@@ -7,6 +9,7 @@ namespace project
 	{
 		private Application app;
 		private MainWindow win;
+		private MySqlConnection DbConn;
 
 		[STAThread]
 		public static void Main(string[] args)
@@ -68,8 +71,18 @@ namespace project
 			return menu;
 		}
 
-		public void Login(string host, string username, string password, string database)
+		public async Task Login(string host, string username, string password, string database)
 		{
+			var connString = new MySqlConnectionStringBuilder()
+			{
+				Server = host,
+				UserID = username,
+				Password = password,
+				Database = database
+			};
+
+			this.DbConn = new MySqlConnection(connString.ToString());
+			await this.DbConn.OpenAsync();
 		}
 
 		private void LoginDialogActivated(object sender, EventArgs e)

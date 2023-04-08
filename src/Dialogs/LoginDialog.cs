@@ -25,9 +25,23 @@ namespace project
 			BtnLogin.Clicked += this.LoginActivated;
 		}
 
-		private void LoginActivated(object sender, EventArgs e)
+		private async void LoginActivated(object sender, EventArgs e)
 		{
-			this.Program.Login(this.TxtHost.Text, this.TxtUsername.Text, this.TxtPassword.Text, this.TxtDatabase.Text);
+			this.Sensitive = false;
+			try
+			{
+				await this.Program.Login(this.TxtHost.Text, this.TxtUsername.Text, this.TxtPassword.Text, this.TxtDatabase.Text);
+				this.Destroy();
+			}
+			catch (Exception ex)
+			{
+				MessageDialog msg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error,
+					ButtonsType.Ok, true, "<b>Échec de la connexion a la base de donnés</b>\n{0}", new object[] { ex });
+				msg.Show();
+				msg.Run();
+				msg.Destroy();
+				this.Sensitive = true;
+			}
 		}
 	}
 }
