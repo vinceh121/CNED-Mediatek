@@ -1,23 +1,72 @@
 using System;
+using System.Data;
 using Gtk;
+using MySqlConnector;
 using UI = Gtk.Builder.ObjectAttribute;
 
 namespace project
 {
 	class MainWindow : ApplicationWindow
 	{
-		public MainWindow() : this(new Builder("MainWindow.glade")) { }
+		private Mediatek _mediatek;
+		[UI] private Toolbar _toolbarStaff = null;
+		[UI] private Grid _gridStaff = null;
 
-		private MainWindow(Builder builder) : base(builder.GetRawOwnedObject("MainWindow"))
+		public MainWindow(Mediatek mediatek) : this(mediatek, new Builder("MainWindow.glade")) { }
+
+		private MainWindow(Mediatek mediatek, Builder builder) : base(builder.GetRawOwnedObject("MainWindow"))
 		{
+			this._mediatek = mediatek;
 			builder.Autoconnect(this);
 
 			DeleteEvent += Window_DeleteEvent;
+
+			var toolAddStaff = new ToolButton(null, "Ajouter personnel");
+			toolAddStaff.IconName = "document-new";
+			toolAddStaff.ActionName = "staffCreate";
+			_toolbarStaff.Add(toolAddStaff);
+
+			this._mediatek.LoggedIn += LoggedInActivated;
+		}
+
+		private async void LoggedInActivated(object sender, EventArgs e)
+		{
+			using MySqlCommand cmd = new MySqlCommand("SELECT personnel.*, service.nom AS nomservice "
+				+ " FROM personnel INNER JOIN service ON personnel.idservice = service.idservice;",
+				this._mediatek.GetConnection());
+			using MySqlDataReader reader = await cmd.ExecuteReaderAsync();
+			int row = 1;
+			while (await reader.ReadAsync())
+			{
+				Staff staff = Staff.FromMySql(reader);
+				this.InsertStaffRow(staff, row++);
+			}
+		}
+
+		private void InsertStaffRow(Staff staff, int row)
+		{
+			int i = 0;
+			this._gridStaff.Attach(TableLabel(staff.Id.ToString()), i++, row, 1, 1);
+			this._gridStaff.Attach(TableLabel(staff.FirstName), i++, row, 1, 1);
+			this._gridStaff.Attach(TableLabel(staff.LastName), i++, row, 1, 1);
+			this._gridStaff.Attach(TableLabel(staff.Phone), i++, row, 1, 1);
+			this._gridStaff.Attach(TableLabel(staff.Email), i++, row, 1, 1);
+			this._gridStaff.Attach(TableLabel(staff.Service), i++, row, 1, 1);
 		}
 
 		private void Window_DeleteEvent(object sender, DeleteEventArgs a)
 		{
 			Application.Quit();
+		}
+
+		private static Label TableLabel(string text)
+		{
+			Label lbl = new Label(text);
+			// huh??? why isn't this the default
+			lbl.Visible = true;
+			lbl.Selectable = true;
+			lbl.Xalign = 0;
+			return lbl;
 		}
 	}
 }

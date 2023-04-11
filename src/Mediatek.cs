@@ -7,9 +7,10 @@ namespace project
 {
 	public class Mediatek
 	{
-		private Application app;
-		private MainWindow win;
-		private MySqlConnection DbConn;
+		public event EventHandler LoggedIn;
+		private Application _app;
+		private MainWindow _win;
+		private MySqlConnection _dbConn;
 
 		[STAThread]
 		public static void Main(string[] args)
@@ -22,21 +23,21 @@ namespace project
 		{
 			Application.Init();
 
-			this.app = new Application("me.vinceh121.mediatek", GLib.ApplicationFlags.None);
-			app.Register(GLib.Cancellable.Current);
+			this._app = new Application("me.vinceh121.mediatek", GLib.ApplicationFlags.None);
+			_app.Register(GLib.Cancellable.Current);
 
-			this.win = new MainWindow();
-			app.AddWindow(win);
+			this._win = new MainWindow(this);
+			_app.AddWindow(_win);
 
 			this.CreateActions();
 
 			var menu = CreateMenu();
-			app.Menubar = menu;
+			_app.Menubar = menu;
 		}
 
 		public void Start()
 		{
-			this.win.ShowAll();
+			this._win.ShowAll();
 			Application.Run();
 		}
 
@@ -44,15 +45,15 @@ namespace project
 		{
 			GLib.SimpleAction quitAction = new GLib.SimpleAction("quit", null);
 			quitAction.Activated += QuitActivated;
-			app.AddAction(quitAction);
+			_app.AddAction(quitAction);
 
 			GLib.SimpleAction aboutAction = new GLib.SimpleAction("about", null);
 			aboutAction.Activated += AboutActivated;
-			app.AddAction(aboutAction);
+			_app.AddAction(aboutAction);
 
 			GLib.SimpleAction loginAction = new GLib.SimpleAction("loginDialog", null);
 			loginAction.Activated += LoginDialogActivated;
-			app.AddAction(loginAction);
+			_app.AddAction(loginAction);
 		}
 
 		private GLib.Menu CreateMenu()
@@ -81,8 +82,10 @@ namespace project
 				Database = database
 			};
 
-			this.DbConn = new MySqlConnection(connString.ToString());
-			await this.DbConn.OpenAsync();
+			this._dbConn = new MySqlConnection(connString.ToString());
+			await this._dbConn.OpenAsync();
+			this.LoggedIn?.Invoke(this, null);
+			((GLib.SimpleAction) this._app.LookupAction("loginDialog")).Enabled = false;
 		}
 
 		private void LoginDialogActivated(object sender, EventArgs e)
@@ -98,7 +101,12 @@ namespace project
 
 		private void AboutActivated(object sender, EventArgs e)
 		{
-			Mediatek.ShowAbout(this.win);
+			Mediatek.ShowAbout(this._win);
+		}
+
+		public MySqlConnection GetConnection()
+		{
+			return this._dbConn;
 		}
 
 		public static void ShowAbout(Window transientFor)
