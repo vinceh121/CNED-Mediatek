@@ -38,7 +38,7 @@ jobs:
       run: dotnet test
       
     - name: Upload artifacts
-      uses: actions/upload-artifacts@v3
+      uses: actions/upload-artifact@v3
       with:
         name: artifacts-${{matrix.os}}-${{matrix.configuration}}-${{matrix.dotnetver}}
         path: bin
