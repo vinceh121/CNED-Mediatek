@@ -12,6 +12,7 @@ jobs:
       name: production
       url: https://mediatek.vinceh121.me
     steps:
+    - uses: actions/checkout@v2
     - name: Install deps
       run: sudo apt-get update && sudo apt-get install doxygen
     - name: Run Doxygen
