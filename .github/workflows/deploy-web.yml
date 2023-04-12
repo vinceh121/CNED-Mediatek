@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install deps
-      run: sudo apt-get update && sudo apt-get install doxygen
+      run: sudo apt-get update && sudo apt-get install doxygen graphviz
     - name: Run Doxygen
       run: doxygen
     - name: Deploy
@@ -23,6 +23,6 @@ jobs:
         host: ${{secrets.HOST}}
         username: ${{secrets.USERNAME}}
         key: ${{secrets.SSH_KEY}}
-        source: "www/*"
+        source: "www/**"
         target: "/var/www/html/cned"
         overwrite: true
