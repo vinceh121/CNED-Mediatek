@@ -14,6 +14,11 @@ namespace project
 	{
 		public string Service { get; set; }
 
+		/// <summary>
+		/// Maps a Staff record from an SQL row, optionally with a service affectation join
+		/// </summary>
+		/// <param name="reader">A MySqlReader that needs to be opened and
+		/// whose cursor is on a row.</param>
 		public static Staff FromMySql(MySqlDataReader reader)
 		{
 			Staff staff = new Staff(

@@ -5,6 +5,23 @@ using MySqlConnector;
 
 namespace project
 {
+	/// <summary>
+	/// GLib signals:
+	/// <list type="bullet">
+	/// <item>
+	/// <term>quit</term>
+	/// <description>Exits the app</description>
+	/// </item>
+	/// <item>
+	/// <term>about</term>
+	/// <description>Shows the À propos dialog</description>
+	/// </item>
+	/// <item>
+	/// <term>loginDialog</term>
+	/// <description>Shows the MySql login dialog</description>
+	/// </item>
+	/// </list>
+	/// </summary>
 	public class Mediatek
 	{
 		public event EventHandler LoggedIn;
@@ -72,6 +89,13 @@ namespace project
 			return menu;
 		}
 
+		/// <summary>
+		/// Asynchronously performs a login operation
+		/// </summary>
+		/// <param name="host">MySql host and port</param>
+		/// <param name="username">MySql username</param>
+		/// <param name="password">MySql password</param>
+		/// <param name="database">MySql database</param>
 		public async Task Login(string host, string username, string password, string database)
 		{
 			var connString = new MySqlConnectionStringBuilder()
