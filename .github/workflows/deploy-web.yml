@@ -23,6 +23,7 @@ jobs:
         host: ${{secrets.HOST}}
         username: ${{secrets.USERNAME}}
         key: ${{secrets.SSH_KEY}}
-        source: "www/**"
+        source: "www/*"
         target: "/var/www/html/cned"
         overwrite: true
+        strip_components: 1
