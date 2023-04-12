@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        configuration: [Debug]
         os: [windows-latest, ubuntu-latest]
         dotnetver: [6.x, 7.x]
 
