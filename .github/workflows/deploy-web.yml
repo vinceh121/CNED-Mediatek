@@ -1,0 +1,27 @@
+
+name: Web Deployment
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://mediatek.vinceh121.me
+    steps:
+    - name: Install deps
+      run: sudo apt-get update && sudo apt-get install doxygen
+    - name: Run Doxygen
+      run: doxygen
+    - name: Deploy
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{secrets.HOST}}
+        username: ${{secrets.USERNAME}}
+        key: ${{secrets.SSH_KEY}}
+        source: "www"
+        target: "/var/www/html/cned"
+        overwrite: true
