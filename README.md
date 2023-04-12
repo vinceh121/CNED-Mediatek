@@ -23,12 +23,12 @@ Therefore, the following components were used instead:
  - GTK# as a UI framework
  - MySqlConnector as DBMS connector
  - Nullsoft Scriptable Install System as installer framework
- - SandCastle Help File Builder as API doc generator
+ - Doxygen as API doc generator
 
 GTK# is fully cross-platform, both as shared and static linking.
 MySql.Data lacks asynchronous methods, and lacks compatibility with other MySql forks compared to MySqlConnector.
 NSIS, while not being cross-platform (nor does it have any interest in being so), is a simple Win32 program and is easily runnable using Wine.
-SHFB is a maintained fork of SandCastle along with extra GUI tools. It is written in pure C# and provides a `dotnet build` task which *may* run fine with dotnet core.
+Doxygen is fully crossplatform and an industry standard.
 
 ## License
 
