@@ -1,7 +1,7 @@
 using System;
 using MySqlConnector;
 
-namespace project
+namespace mediatek
 {
 	public record Staff(
 		long Id,
