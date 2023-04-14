@@ -31,7 +31,7 @@ namespace project
 
 		private void StaffCreateActivated(object sender, EventArgs e)
 		{
-			CreateUserDialog dialog = new CreateUserDialog(this._mediatek);
+			CreateStaffDialog dialog = new CreateStaffDialog(this._mediatek);
 			dialog.ShowAll();
 		}
 

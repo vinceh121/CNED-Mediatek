@@ -6,7 +6,7 @@ using UI = Gtk.Builder.ObjectAttribute;
 
 namespace project
 {
-	class CreateUserDialog : Dialog
+	class CreateStaffDialog : Dialog
 	{
 		private Mediatek _mediatek;
 		[UI] private Entry _txtLastName = null;
@@ -18,9 +18,9 @@ namespace project
 		[UI] private Button _btnCreateStaffAndClose = null;
 		private IList _serviceIds = new ArrayList();
 
-		public CreateUserDialog(Mediatek _mediatek) : this(_mediatek, new Builder("CreateUserDialog.glade")) { }
+		public CreateStaffDialog(Mediatek _mediatek) : this(_mediatek, new Builder("CreateStaffDialog.glade")) { }
 
-		private CreateUserDialog(Mediatek _mediatek, Builder builder) : base(builder.GetRawOwnedObject("CreateUserDialog"))
+		private CreateStaffDialog(Mediatek _mediatek, Builder builder) : base(builder.GetRawOwnedObject("CreateStaffDialog"))
 		{
 			this._mediatek = _mediatek;
 
