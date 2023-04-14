@@ -57,6 +57,8 @@ namespace project
 			this._cbxService.AddAttribute(txtRender, "id", 1);
 
 			this._cbxService.IdColumn = 1;
+			// force the first index to be selected to prevent null selection
+			this._cbxService.Active = 0;
 
 			this._cbxService.Sensitive = true;
 		}
