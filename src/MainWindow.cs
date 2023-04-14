@@ -9,7 +9,7 @@ namespace project
 	{
 		private Mediatek _mediatek;
 		[UI] private Toolbar _toolbarStaff = null;
-		[UI] private Grid _gridStaff = null;
+		[UI] private TreeView _staffTree = null;
 
 		public MainWindow(Mediatek mediatek) : this(mediatek, new Builder("MainWindow.glade")) { }
 
@@ -18,6 +18,8 @@ namespace project
 			this._mediatek = mediatek;
 			this.Application = mediatek.GetApplication();
 			builder.Autoconnect(this);
+
+			this.CreateColumns();
 
 			DeleteEvent += Window_DeleteEvent;
 
@@ -30,29 +32,44 @@ namespace project
 			this._mediatek.LoggedIn += LoggedInActivated;
 		}
 
+		private void CreateColumns()
+		{
+			int i = 0;
+			this._staffTree.AppendColumn(new TreeViewColumn("ID", new CellRendererText() { Weight = 100 }, "text", i++) { Reorderable = true });
+			this._staffTree.AppendColumn(new TreeViewColumn("Prénom", new CellRendererText(), "text", i++));
+			this._staffTree.AppendColumn(new TreeViewColumn("Nom", new CellRendererText(), "text", i++));
+			this._staffTree.AppendColumn(new TreeViewColumn("Tél.", new CellRendererText(), "text", i++));
+			this._staffTree.AppendColumn(new TreeViewColumn("EMail", new CellRendererText(), "text", i++));
+			this._staffTree.AppendColumn(new TreeViewColumn("Service", new CellRendererText(), "text", i++));
+			this._staffTree.AppendColumn(new TreeViewColumn("Absent ajd.", new CellRendererToggle() { Activatable = false }, "active", i++));
+		}
+
 		private async void LoggedInActivated(object sender, EventArgs e)
 		{
 			using MySqlCommand cmd = new MySqlCommand("SELECT personnel.*, service.nom AS nomservice "
 				+ " FROM personnel INNER JOIN service ON personnel.idservice = service.idservice;",
 				this._mediatek.GetConnection());
 			using MySqlDataReader reader = await cmd.ExecuteReaderAsync();
-			int row = 1;
+
+			ListStore model = new ListStore(GLib.GType.Int64, GLib.GType.String, GLib.GType.String, GLib.GType.String,
+				GLib.GType.String, GLib.GType.String, GLib.GType.Boolean);
+
 			while (await reader.ReadAsync())
 			{
 				Staff staff = Staff.FromMySql(reader);
-				this.InsertStaffRow(staff, row++);
+				int i = 0;
+				TreeIter iter = model.Append();
+				model.SetValue(iter, i++, staff.Id);
+				model.SetValue(iter, i++, staff.FirstName);
+				model.SetValue(iter, i++, staff.LastName);
+				model.SetValue(iter, i++, staff.Phone);
+				model.SetValue(iter, i++, staff.Email);
+				model.SetValue(iter, i++, staff.Service);
+				// todo leave column
+				model.SetValue(iter, i++, new Random().NextSingle() > 0.5f);
 			}
-		}
 
-		private void InsertStaffRow(Staff staff, int row)
-		{
-			int i = 0;
-			this._gridStaff.Attach(TableLabel(staff.Id.ToString()), i++, row, 1, 1);
-			this._gridStaff.Attach(TableLabel(staff.FirstName), i++, row, 1, 1);
-			this._gridStaff.Attach(TableLabel(staff.LastName), i++, row, 1, 1);
-			this._gridStaff.Attach(TableLabel(staff.Phone), i++, row, 1, 1);
-			this._gridStaff.Attach(TableLabel(staff.Email), i++, row, 1, 1);
-			this._gridStaff.Attach(TableLabel(staff.Service), i++, row, 1, 1);
+			this._staffTree.Model = model;
 		}
 
 		private void Window_DeleteEvent(object sender, DeleteEventArgs a)

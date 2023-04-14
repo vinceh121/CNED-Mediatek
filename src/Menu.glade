@@ -24,7 +24,7 @@ MediaTek, un exercice d'application métier
       <attribute name="label" translatable="yes">_Fichier</attribute>
       <item>
         <attribute name="label" translatable="yes">_Connexion</attribute>
-        <attribute name="action">app.login</attribute>
+        <attribute name="action">app.loginDialog</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">_Quitter</attribute>
