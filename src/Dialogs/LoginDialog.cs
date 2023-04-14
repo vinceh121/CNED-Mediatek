@@ -6,23 +6,25 @@ namespace project
 {
 	class LoginDialog : Dialog
 	{
-		private Mediatek Program;
-		[UI] private Button BtnLogin = null; // this useless null def is just to get rid of the compiler warning
-		[UI] private Entry TxtHost = null;
-		[UI] private Entry TxtUsername = null;
-		[UI] private Entry TxtPassword = null;
-		[UI] private Entry TxtDatabase = null;
+		private Mediatek _program;
+		[UI] private Button _btnLogin = null; // this useless null def is just to get rid of the compiler warning
+		[UI] private Button _btnCancel = null;
+		[UI] private Entry _txtHost = null;
+		[UI] private Entry _txtUsername = null;
+		[UI] private Entry _txtPassword = null;
+		[UI] private Entry _txtDatabase = null;
 
-		public LoginDialog(Mediatek Program) : this(new Builder("LoginDialog.glade"))
+		public LoginDialog(Mediatek program) : this(new Builder("LoginDialog.glade"))
 		{
-			this.Program = Program;
+			this._program = program;
 		}
 
 		private LoginDialog(Builder builder) : base(builder.GetRawOwnedObject("LoginDialog"))
 		{
 			builder.Autoconnect(this);
 
-			BtnLogin.Clicked += this.LoginActivated;
+			_btnLogin.Clicked += this.LoginActivated;
+			_btnCancel.Clicked += (_, _) => this.Destroy();
 		}
 
 		private async void LoginActivated(object sender, EventArgs e)
@@ -30,7 +32,7 @@ namespace project
 			this.Sensitive = false;
 			try
 			{
-				await this.Program.Login(this.TxtHost.Text, this.TxtUsername.Text, this.TxtPassword.Text, this.TxtDatabase.Text);
+				await this._program.Login(this._txtHost.Text, this._txtUsername.Text, this._txtPassword.Text, this._txtDatabase.Text);
 				this.Destroy();
 			}
 			catch (Exception ex)

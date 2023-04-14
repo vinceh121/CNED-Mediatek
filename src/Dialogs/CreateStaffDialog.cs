@@ -16,6 +16,7 @@ namespace project
 		[UI] private ComboBox _cbxService = null;
 		[UI] private Button _btnCreateStaff = null;
 		[UI] private Button _btnCreateStaffAndClose = null;
+		[UI] private Button _btnCancel = null;
 		private IList _serviceIds = new ArrayList();
 
 		public CreateStaffDialog(Mediatek _mediatek) : this(_mediatek, new Builder("CreateStaffDialog.glade")) { }
@@ -28,6 +29,7 @@ namespace project
 
 			this.LoadServices();
 
+			this._btnCancel.Clicked += (_, _) => this.Destroy();
 			this._btnCreateStaff.Clicked += CreateStaffActivated;
 
 			this._btnCreateStaffAndClose.Clicked += (object sender, EventArgs args) =>

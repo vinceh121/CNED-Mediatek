@@ -35,12 +35,11 @@ MediaTek, un exercice d'application métier
             <property name="can-focus">False</property>
             <property name="layout-style">end</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="_btnCancel">
                 <property name="label" translatable="yes">Annuler</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <property name="action-name">cancel</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -49,7 +48,7 @@ MediaTek, un exercice d'application métier
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="BtnLogin">
+              <object class="GtkButton" id="_btnLogin">
                 <property name="label" translatable="yes">Connecter</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
@@ -100,7 +99,7 @@ MediaTek, un exercice d'application métier
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
-                  <object class="GtkEntry" id="TxtHost">
+                  <object class="GtkEntry" id="_txtHost">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="text" translatable="yes">localhost</property>
@@ -133,7 +132,7 @@ MediaTek, un exercice d'application métier
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
-                  <object class="GtkEntry" id="TxtUsername">
+                  <object class="GtkEntry" id="_txtUsername">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="text" translatable="yes">mediatek</property>
@@ -165,7 +164,7 @@ MediaTek, un exercice d'application métier
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
-                  <object class="GtkEntry" id="TxtPassword">
+                  <object class="GtkEntry" id="_txtPassword">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="has-focus">True</property>
@@ -200,7 +199,7 @@ MediaTek, un exercice d'application métier
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
-                  <object class="GtkEntry" id="TxtDatabase">
+                  <object class="GtkEntry" id="_txtDatabase">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="text" translatable="yes">mediatek</property>

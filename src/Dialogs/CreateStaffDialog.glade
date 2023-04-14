@@ -45,12 +45,11 @@ MediaTek, un exercice d'application métier
             <property name="can-focus">False</property>
             <property name="layout-style">expand</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="_btnCancel">
                 <property name="label" translatable="yes">Annuler</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <property name="action-name">cancel</property>
               </object>
               <packing>
                 <property name="expand">True</property>
