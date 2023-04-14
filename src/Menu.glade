@@ -39,11 +39,11 @@ MediaTek, un exercice d'application métier
       </item>
       <item>
         <attribute name="label" translatable="yes">_Modifier personne</attribute>
-        <attribute name="action">app.staffEdit</attribute>
+        <attribute name="action">win.staffEdit</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">_Supprimer personne</attribute>
-        <attribute name="action">app.staffDelete</attribute>
+        <attribute name="action">win.staffDelete</attribute>
       </item>
     </submenu>
     <submenu>

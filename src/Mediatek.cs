@@ -119,6 +119,13 @@ namespace project
 			{
 				((GLib.SimpleAction)this._app.LookupAction(act)).Enabled = true;
 			}
+
+			// ditto but for win. actions
+			string[] winActions = new string[] { "staffDelete" };
+			foreach (string act in winActions)
+			{
+				((GLib.SimpleAction)this._win.LookupAction(act)).Enabled = true;
+			}
 		}
 
 		private void StaffCreateActivated(object sender, EventArgs e)

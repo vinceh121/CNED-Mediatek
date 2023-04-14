@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Gtk;
 using MySqlConnector;
 using UI = Gtk.Builder.ObjectAttribute;
@@ -30,6 +31,12 @@ namespace project
 			_toolbarStaff.Add(toolAddStaff);
 
 			this._mediatek.LoggedIn += LoggedInActivated;
+
+			GLib.SimpleAction staffDeleteAction = new GLib.SimpleAction("staffDelete", null);
+			staffDeleteAction.Activated += StaffDeleteActivated;
+			staffDeleteAction.Enabled = false;
+			this.Application.SetAccelsForAction("win.staffDelete", new string[] { "Delete" });
+			this.AddAction(staffDeleteAction);
 		}
 
 		private void CreateColumns()
@@ -42,6 +49,55 @@ namespace project
 			this._staffTree.AppendColumn(new TreeViewColumn("EMail", new CellRendererText(), "text", i++));
 			this._staffTree.AppendColumn(new TreeViewColumn("Service", new CellRendererText(), "text", i++));
 			this._staffTree.AppendColumn(new TreeViewColumn("Absent ajd.", new CellRendererToggle() { Activatable = false }, "active", i++));
+		}
+
+		private async void StaffDeleteActivated(object sender, EventArgs args)
+		{
+			List<long> ids = new List<long>();
+
+			TreePath[] paths = this._staffTree.Selection.GetSelectedRows();
+
+			if (paths.Length == 0)
+			{
+				MessageDialog diag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok,
+					false, "Sélectionnez au moins une personne",
+					new object[0]);
+				diag.Run();
+				diag.Destroy();
+				return;
+			}
+
+			foreach (TreePath p in paths)
+			{
+				// since all our "tree" nodes are root nodes, the paths here should only have a depth of 1
+				TreeIter iter;
+				this._staffTree.Model.GetIter(out iter, p);
+				ids.Add((long)this._staffTree.Model.GetValue(iter, 0));
+			}
+
+			// apparently ADO.NET doesn't have array parameters
+			// https://www.mikesdotnetting.com/article/116/parameterized-in-clauses-with-ado-net-and-linq
+			string[] parameters = new string[ids.Count];
+			for (int i = 0; i < parameters.Length; i++)
+			{
+				parameters[i] = "@id" + i;
+			}
+
+			using MySqlCommand cmd = new MySqlCommand("DELETE FROM personnel WHERE idpersonnel IN ("
+				+ String.Join(", ", parameters) + ");", this._mediatek.GetConnection());
+			for (int i = 0; i < ids.Count; i++)
+			{
+				cmd.Parameters.AddWithValue("@id" + i, ids[i]);
+			}
+			int affectedRows = await cmd.ExecuteNonQueryAsync();
+			if (affectedRows != ids.Count)
+			{
+				MessageDialog diag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok,
+					false, "Error: deleted wrong number of rows, should've deleted {0} but actually deleted {1}",
+					new object[] { ids.Count, affectedRows });
+				diag.Run();
+				diag.Destroy();
+			}
 		}
 
 		private async void LoggedInActivated(object sender, EventArgs e)
