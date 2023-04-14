@@ -30,7 +30,7 @@ MediaTek, un exercice d'application métier
     <property name="can-focus">False</property>
     <property name="icon-name">document-new</property>
   </object>
-  <object class="GtkDialog" id="CreateUserDialog">
+  <object class="GtkDialog" id="CreateStaffDialog">
     <property name="can-focus">False</property>
     <property name="modal">True</property>
     <property name="icon-name">document-new</property>
