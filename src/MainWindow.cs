@@ -97,6 +97,12 @@ namespace project
 					new object[] { ids.Count, affectedRows });
 				diag.Run();
 				diag.Destroy();
+				return;
+			}
+
+			// delete in db worked, now delete in ui
+			foreach (TreePath p in paths) {
+				this._staffTree.Model.EmitRowDeleted(p);
 			}
 		}
 
