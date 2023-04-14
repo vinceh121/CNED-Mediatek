@@ -1,5 +1,4 @@
 using System;
-using System.Data;
 using Gtk;
 using MySqlConnector;
 using UI = Gtk.Builder.ObjectAttribute;
@@ -22,15 +21,24 @@ namespace project
 			DeleteEvent += Window_DeleteEvent;
 
 			var toolAddStaff = new ToolButton(null, "Ajouter personnel");
+			toolAddStaff.Sensitive = true;
 			toolAddStaff.IconName = "document-new";
-			toolAddStaff.ActionName = "staffCreate";
+			toolAddStaff.Clicked += StaffCreateActivated;
 			_toolbarStaff.Add(toolAddStaff);
 
 			this._mediatek.LoggedIn += LoggedInActivated;
 		}
 
+		private void StaffCreateActivated(object sender, EventArgs e)
+		{
+			CreateUserDialog dialog = new CreateUserDialog(this._mediatek);
+			dialog.ShowAll();
+		}
+
 		private async void LoggedInActivated(object sender, EventArgs e)
 		{
+			this._toolbarStaff.Sensitive = true;
+
 			using MySqlCommand cmd = new MySqlCommand("SELECT personnel.*, service.nom AS nomservice "
 				+ " FROM personnel INNER JOIN service ON personnel.idservice = service.idservice;",
 				this._mediatek.GetConnection());

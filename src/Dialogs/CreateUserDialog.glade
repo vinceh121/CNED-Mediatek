@@ -20,20 +20,30 @@ MediaTek, un exercice d'application métier
 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
-  <object class="GtkDialog" id="LoginDialog">
+  <object class="GtkImage" id="imgCreate">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">list-add</property>
+  </object>
+  <object class="GtkImage" id="imgCreateAndClose">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">document-new</property>
+  </object>
+  <object class="GtkDialog" id="CreateUserDialog">
     <property name="can-focus">False</property>
     <property name="modal">True</property>
-    <property name="default-width">320</property>
-    <property name="default-height">260</property>
+    <property name="icon-name">document-new</property>
     <property name="type-hint">dialog</property>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can-focus">False</property>
-            <property name="layout-style">end</property>
+            <property name="layout-style">expand</property>
             <child>
               <object class="GtkButton">
                 <property name="label" translatable="yes">Annuler</property>
@@ -49,17 +59,31 @@ MediaTek, un exercice d'application métier
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="BtnLogin">
-                <property name="label" translatable="yes">Connecter</property>
+              <object class="GtkButton" id="_btnCreateStaffAndClose">
+                <property name="label" translatable="yes">Créer et fermer</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="can-default">True</property>
                 <property name="receives-default">True</property>
+                <property name="image">imgCreateAndClose</property>
               </object>
               <packing>
                 <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="_btnCreateStaff">
+                <property name="label" translatable="yes">Créer</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="image">imgCreate</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
@@ -73,6 +97,8 @@ MediaTek, un exercice d'application métier
           <object class="GtkFlowBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="column-spacing">2</property>
+            <property name="row-spacing">2</property>
             <property name="min-children-per-line">2</property>
             <property name="max-children-per-line">2</property>
             <property name="selection-mode">none</property>
@@ -86,7 +112,7 @@ MediaTek, un exercice d'application métier
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Hôte</property>
+                    <property name="label" translatable="yes">Nom</property>
                     <property name="justify">right</property>
                     <property name="xalign">1</property>
                   </object>
@@ -100,11 +126,9 @@ MediaTek, un exercice d'application métier
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
-                  <object class="GtkEntry" id="TxtHost">
+                  <object class="GtkEntry" id="_txtLastName">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="text" translatable="yes">localhost</property>
-                    <property name="input-hints">GTK_INPUT_HINT_NO_SPELLCHECK | GTK_INPUT_HINT_NO_EMOJI | GTK_INPUT_HINT_NONE</property>
                   </object>
                 </child>
               </object>
@@ -119,7 +143,7 @@ MediaTek, un exercice d'application métier
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Nom d'utilisateur</property>
+                    <property name="label" translatable="yes">Prénom</property>
                     <property name="justify">right</property>
                     <property name="xalign">1</property>
                   </object>
@@ -133,10 +157,9 @@ MediaTek, un exercice d'application métier
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
-                  <object class="GtkEntry" id="TxtUsername">
+                  <object class="GtkEntry" id="_txtFirstName">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="text" translatable="yes">mediatek</property>
                   </object>
                 </child>
               </object>
@@ -151,7 +174,7 @@ MediaTek, un exercice d'application métier
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Mot-de-passe</property>
+                    <property name="label" translatable="yes">Tél.</property>
                     <property name="justify">right</property>
                     <property name="xalign">1</property>
                   </object>
@@ -165,13 +188,10 @@ MediaTek, un exercice d'application métier
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
-                  <object class="GtkEntry" id="TxtPassword">
+                  <object class="GtkEntry" id="_txtPhone">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="has-focus">True</property>
-                    <property name="visibility">False</property>
-                    <property name="invisible-char">●</property>
-                    <property name="input-purpose">password</property>
+                    <property name="input-purpose">phone</property>
                   </object>
                 </child>
               </object>
@@ -186,7 +206,7 @@ MediaTek, un exercice d'application métier
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Base de donnés</property>
+                    <property name="label" translatable="yes">EMail</property>
                     <property name="justify">right</property>
                     <property name="xalign">1</property>
                   </object>
@@ -200,10 +220,42 @@ MediaTek, un exercice d'application métier
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
-                  <object class="GtkEntry" id="TxtDatabase">
+                  <object class="GtkEntry" id="_txtEmail">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="text" translatable="yes">mediatek</property>
+                    <property name="input-purpose">email</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkFlowBoxChild">
+                <property name="width-request">100</property>
+                <property name="height-request">80</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Service</property>
+                    <property name="justify">right</property>
+                    <property name="xalign">1</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkFlowBoxChild">
+                <property name="width-request">100</property>
+                <property name="height-request">80</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <object class="GtkComboBox" id="_cbxService">
+                    <property name="visible">True</property>
+                    <property name="sensitive">False</property>
+                    <property name="can-focus">False</property>
                   </object>
                 </child>
               </object>
