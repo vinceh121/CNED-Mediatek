@@ -16,29 +16,22 @@ namespace project
 		private MainWindow(Mediatek mediatek, Builder builder) : base(builder.GetRawOwnedObject("MainWindow"))
 		{
 			this._mediatek = mediatek;
+			this.Application = mediatek.GetApplication();
 			builder.Autoconnect(this);
 
 			DeleteEvent += Window_DeleteEvent;
 
-			var toolAddStaff = new ToolButton(null, "Ajouter personnel");
+			ToolButton toolAddStaff = new ToolButton(null, "Ajouter personnel");
 			toolAddStaff.Sensitive = true;
 			toolAddStaff.IconName = "document-new";
-			toolAddStaff.Clicked += StaffCreateActivated;
+			toolAddStaff.ActionName = "app.staffCreate";
 			_toolbarStaff.Add(toolAddStaff);
 
 			this._mediatek.LoggedIn += LoggedInActivated;
 		}
 
-		private void StaffCreateActivated(object sender, EventArgs e)
-		{
-			CreateStaffDialog dialog = new CreateStaffDialog(this._mediatek);
-			dialog.ShowAll();
-		}
-
 		private async void LoggedInActivated(object sender, EventArgs e)
 		{
-			this._toolbarStaff.Sensitive = true;
-
 			using MySqlCommand cmd = new MySqlCommand("SELECT personnel.*, service.nom AS nomservice "
 				+ " FROM personnel INNER JOIN service ON personnel.idservice = service.idservice;",
 				this._mediatek.GetConnection());

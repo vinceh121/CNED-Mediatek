@@ -73,6 +73,14 @@ namespace project
 			GLib.SimpleAction loginAction = new GLib.SimpleAction("loginDialog", null);
 			loginAction.Activated += LoginDialogActivated;
 			_app.AddAction(loginAction);
+
+
+			// Staff actions //
+
+			GLib.SimpleAction actionAddStaff = new GLib.SimpleAction("staffCreate", null);
+			actionAddStaff.Activated += StaffCreateActivated;
+			actionAddStaff.Enabled = false;
+			_app.AddAction(actionAddStaff);
 		}
 
 		private GLib.Menu CreateMenu()
@@ -83,6 +91,14 @@ namespace project
 			menuFile.AppendItem(new GLib.MenuItem("_Connexion", "app.loginDialog"));
 			menuFile.AppendItem(new GLib.MenuItem("_Quitter", "app.quit"));
 			menu.AppendSubmenu("_Fichier", menuFile);
+
+			GLib.Menu menuStaff = new GLib.Menu();
+			menuStaff.AppendItem(new GLib.MenuItem("_Créer personne", "app.staffCreate"));
+			// actions prefixed with win. are added to an ApplicationWindow
+			// actions that need to rely on list selection in the window therefore need to be added withing the window
+			menuStaff.AppendItem(new GLib.MenuItem("_Modifier personne", "win.staffEdit"));
+			menuStaff.AppendItem(new GLib.MenuItem("_Supprimer personne", "win.staffDelete"));
+			menu.AppendSubmenu("_Personnel", menuStaff);
 
 			GLib.Menu menuHelp = new GLib.Menu();
 			menuHelp.AppendItem(new GLib.MenuItem("_À propos", "app.about"));
@@ -111,12 +127,29 @@ namespace project
 			this._dbConn = new MySqlConnection(connString.ToString());
 			await this._dbConn.OpenAsync();
 			this.LoggedIn?.Invoke(this, null);
+
 			((GLib.SimpleAction)this._app.LookupAction("loginDialog")).Enabled = false;
+
+			// list of app. actions to be enabled only once we are loggedin
+			// those actions need to be disabled by default
+			string[] appActions = new string[] { "staffCreate" };
+			foreach (string act in appActions)
+			{
+				((GLib.SimpleAction)this._app.LookupAction(act)).Enabled = true;
+			}
+		}
+
+		private void StaffCreateActivated(object sender, EventArgs e)
+		{
+			CreateStaffDialog dialog = new CreateStaffDialog(this);
+			dialog.TransientFor = _win;
+			dialog.ShowAll();
 		}
 
 		private void LoginDialogActivated(object sender, EventArgs e)
 		{
 			LoginDialog diag = new LoginDialog(this);
+			diag.TransientFor = _win;
 			diag.ShowAll();
 		}
 
@@ -128,6 +161,11 @@ namespace project
 		private void AboutActivated(object sender, EventArgs e)
 		{
 			Mediatek.ShowAbout(this._win);
+		}
+
+		public Application GetApplication()
+		{
+			return this._app;
 		}
 
 		public MySqlConnection GetConnection()
