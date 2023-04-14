@@ -32,6 +32,8 @@ namespace project
 		[STAThread]
 		public static void Main(string[] args)
 		{
+			GLib.ExceptionManager.UnhandledException += HandleUncaughtException;
+
 			Mediatek prog = new Mediatek();
 			prog.Start();
 		}
@@ -109,7 +111,7 @@ namespace project
 			this._dbConn = new MySqlConnection(connString.ToString());
 			await this._dbConn.OpenAsync();
 			this.LoggedIn?.Invoke(this, null);
-			((GLib.SimpleAction) this._app.LookupAction("loginDialog")).Enabled = false;
+			((GLib.SimpleAction)this._app.LookupAction("loginDialog")).Enabled = false;
 		}
 
 		private void LoginDialogActivated(object sender, EventArgs e)
@@ -162,6 +164,16 @@ namespace project
 			};
 			dialog.Run();
 			dialog.Hide();
+		}
+
+		private static void HandleUncaughtException(GLib.UnhandledExceptionArgs args)
+		{
+			Console.WriteLine(args.ExceptionObject);
+			MessageDialog diag = new MessageDialog(null, 0,
+				MessageType.Error, ButtonsType.Ok, false,
+				"Erreur inattendue : {0}", new object[] { args.ExceptionObject });
+			diag.Run();
+			diag.Destroy();
 		}
 	}
 }
