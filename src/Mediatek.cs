@@ -64,6 +64,7 @@ namespace project
 		{
 			GLib.SimpleAction quitAction = new GLib.SimpleAction("quit", null);
 			quitAction.Activated += QuitActivated;
+			this._app.SetAccelsForAction("app.quit", new string[] { "<Ctrl>Q" });
 			_app.AddAction(quitAction);
 
 			GLib.SimpleAction aboutAction = new GLib.SimpleAction("about", null);
@@ -72,6 +73,7 @@ namespace project
 
 			GLib.SimpleAction loginAction = new GLib.SimpleAction("loginDialog", null);
 			loginAction.Activated += LoginDialogActivated;
+			this._app.SetAccelsForAction("app.loginDialog", new string[] { "<Ctrl>O" });
 			_app.AddAction(loginAction);
 
 			// Staff actions //
@@ -79,6 +81,7 @@ namespace project
 			GLib.SimpleAction actionAddStaff = new GLib.SimpleAction("staffCreate", null);
 			actionAddStaff.Activated += StaffCreateActivated;
 			actionAddStaff.Enabled = false;
+			this._app.SetAccelsForAction("app.staffCreate", new string[] { "<Ctrl>N" });
 			_app.AddAction(actionAddStaff);
 		}
 
