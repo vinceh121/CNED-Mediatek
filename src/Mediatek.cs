@@ -20,6 +20,10 @@ namespace project
 	/// <term>loginDialog</term>
 	/// <description>Shows the MySql login dialog</description>
 	/// </item>
+	/// <item>
+	/// <term>staffCreate</term>
+	/// <description>Shows the Create new staff dialog</description>
+	/// </item>
 	/// </list>
 	/// </summary>
 	public class Mediatek
