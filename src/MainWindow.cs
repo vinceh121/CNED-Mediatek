@@ -118,7 +118,7 @@ namespace mediatek
 
 			while (await reader.ReadAsync())
 			{
-				Staff staff = Staff.FromMySql(reader);
+				Staff staff = EntityMapper.MapFromRow<Staff>(reader);
 				int i = 0;
 				TreeIter iter = model.Append();
 				model.SetValue(iter, i++, staff.Id);
