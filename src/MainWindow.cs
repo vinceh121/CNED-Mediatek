@@ -39,6 +39,12 @@ namespace Mediatek
 			staffDeleteAction.Enabled = false;
 			this.Application.SetAccelsForAction("win.staffDelete", new string[] { "Delete" });
 			this.AddAction(staffDeleteAction);
+
+			GLib.SimpleAction actionEditStaff = new GLib.SimpleAction("staffEdit", null);
+			actionEditStaff.Activated += StaffEditActivated;
+			actionEditStaff.Enabled = false;
+			this.Application.SetAccelsForAction("win.staffEdit", new string[] { "<Ctrl>E" });
+			this.AddAction(actionEditStaff);
 		}
 
 		private void CreateColumns()
@@ -53,13 +59,30 @@ namespace Mediatek
 			this._staffTree.AppendColumn(new TreeViewColumn("Absent ajd.", new CellRendererToggle() { Activatable = false }, "active", i++));
 		}
 
+		private void StaffEditActivated(object sender, EventArgs e)
+		{
+			List<long> ids = this.GetSelectedIds();
+
+			if (ids.Count != 1)
+			{
+				MessageDialog diag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok,
+					false, "Sélectionnez une personne seulement",
+					new object[0]);
+				diag.Run();
+				diag.Destroy();
+				return;
+			}
+
+			EditStaffDialog dialog = new EditStaffDialog(this._mediatek, ids[0]);
+			dialog.ShowAll();
+			dialog.TransientFor = this;
+		}
+
 		private async void StaffDeleteActivated(object sender, EventArgs args)
 		{
-			List<long> ids = new List<long>();
+			List<long> ids = this.GetSelectedIds();
 
-			TreePath[] paths = this._staffTree.Selection.GetSelectedRows();
-
-			if (paths.Length == 0)
+			if (ids.Count == 0)
 			{
 				MessageDialog diag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok,
 					false, "Sélectionnez au moins une personne",
@@ -67,14 +90,6 @@ namespace Mediatek
 				diag.Run();
 				diag.Destroy();
 				return;
-			}
-
-			foreach (TreePath p in paths)
-			{
-				// since all our "tree" nodes are root nodes, the paths here should only have a depth of 1
-				TreeIter iter;
-				this._staffTree.Model.GetIter(out iter, p);
-				ids.Add((long)this._staffTree.Model.GetValue(iter, 0));
 			}
 
 			// apparently ADO.NET doesn't have array parameters
@@ -103,6 +118,7 @@ namespace Mediatek
 			}
 
 			// delete in db worked, now delete in ui
+			TreePath[] paths = this._staffTree.Selection.GetSelectedRows();
 			foreach (TreePath p in paths)
 			{
 				this._staffTree.Model.EmitRowDeleted(p);
@@ -149,6 +165,26 @@ namespace Mediatek
 		private void Window_DeleteEvent(object sender, DeleteEventArgs a)
 		{
 			Application.Quit();
+		}
+
+		/// <summary>
+		/// Returns the IDs of staff selected in the TreeView. Empty list when none are selected.
+		/// </summary>
+		public List<long> GetSelectedIds()
+		{
+			List<long> ids = new List<long>();
+
+			TreePath[] paths = this._staffTree.Selection.GetSelectedRows();
+
+			foreach (TreePath p in paths)
+			{
+				// since all our "tree" nodes are root nodes, the paths here should only have a depth of 1
+				TreeIter iter;
+				this._staffTree.Model.GetIter(out iter, p);
+				ids.Add((long)this._staffTree.Model.GetValue(iter, 0));
+			}
+
+			return ids;
 		}
 
 		private static Label TableLabel(string text)

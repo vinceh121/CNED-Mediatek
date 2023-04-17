@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Gtk;
 using MySqlConnector;
 
@@ -110,6 +111,7 @@ namespace Mediatek
 
 			this._dbConn = new MySqlConnection(connString.ToString());
 			await this._dbConn.OpenAsync();
+			// trigger LoggedIn event
 			this.LoggedIn?.Invoke(this, null);
 
 			((GLib.SimpleAction)this._app.LookupAction("loginDialog")).Enabled = false;
@@ -123,7 +125,7 @@ namespace Mediatek
 			}
 
 			// ditto but for win. actions
-			string[] winActions = new string[] { "staffDelete" };
+			string[] winActions = new string[] { "staffDelete", "staffEdit" };
 			foreach (string act in winActions)
 			{
 				((GLib.SimpleAction)this._win.LookupAction(act)).Enabled = true;
