@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Gtk;
 using MySqlConnector;
+
+using Mediatek.Dialogs;
 
 namespace Mediatek
 {

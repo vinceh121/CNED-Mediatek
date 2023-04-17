@@ -5,6 +5,8 @@ using MySqlConnector;
 using UI = Gtk.Builder.ObjectAttribute;
 
 using Mediatek.Mapper;
+using Mediatek.Entities;
+using Mediatek.Dialogs;
 
 namespace Mediatek
 {

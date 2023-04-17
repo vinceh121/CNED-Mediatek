@@ -1,6 +1,6 @@
 using Mediatek.Mapper;
 
-namespace Mediatek
+namespace Mediatek.Entities
 {
 	public record Staff(
 		[DbAttribute("idpersonnel")] long Id,

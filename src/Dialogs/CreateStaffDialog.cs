@@ -4,7 +4,9 @@ using Gtk;
 using MySqlConnector;
 using UI = Gtk.Builder.ObjectAttribute;
 
-namespace Mediatek
+using Mediatek.Entities;
+
+namespace Mediatek.Dialogs
 {
 	class CreateStaffDialog : Dialog
 	{

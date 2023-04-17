@@ -5,8 +5,9 @@ using MySqlConnector;
 using UI = Gtk.Builder.ObjectAttribute;
 
 using Mediatek.Mapper;
+using Mediatek.Entities;
 
-namespace Mediatek
+namespace Mediatek.Dialogs
 {
 	class EditStaffDialog : Dialog
 	{
