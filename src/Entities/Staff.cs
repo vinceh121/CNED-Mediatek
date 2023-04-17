@@ -13,5 +13,8 @@ namespace Mediatek.Entities
 	{
 		[DbAttribute("nomservice", Optional = true)]
 		public string Service { get; set; }
+
+		[DbAttribute("absent", Optional = true)]
+		public bool IsCurrentlyOut { get; set; }
 	}
 }
