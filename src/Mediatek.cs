@@ -46,6 +46,19 @@ namespace mediatek
 		{
 			Application.Init();
 
+			ListStore store = new ListStore(GLib.GType.String, GLib.GType.String);
+			store.AppendValues("hello", "hello");
+			store.AppendValues("world", "world");
+
+			ComboBox cbx = new ComboBox();
+			cbx.Model = store;
+
+			foreach (object[] vals in cbx.Model as ListStore)
+			{
+				Console.WriteLine(String.Join(", ", vals));
+			}
+
+
 			this._app = new Application("me.vinceh121.mediatek", GLib.ApplicationFlags.None);
 			_app.Register(GLib.Cancellable.Current);
 

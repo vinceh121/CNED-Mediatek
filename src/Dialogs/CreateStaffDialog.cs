@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Gtk;
 using MySqlConnector;
 using UI = Gtk.Builder.ObjectAttribute;
@@ -17,7 +17,7 @@ namespace mediatek
 		[UI] private Button _btnCreateStaff = null;
 		[UI] private Button _btnCreateStaffAndClose = null;
 		[UI] private Button _btnCancel = null;
-		private IList _serviceIds = new ArrayList();
+		private Dictionary<long, string> _serviceNames = new Dictionary<long, string>();
 
 		public CreateStaffDialog(Mediatek _mediatek) : this(_mediatek, new Builder("CreateStaffDialog.glade")) { }
 
@@ -49,6 +49,7 @@ namespace mediatek
 			using MySqlDataReader read = await cmd.ExecuteReaderAsync();
 			while (await read.ReadAsync())
 			{
+				this._serviceNames.Add(read.GetInt64("idservice"), read.GetString("nom"));
 				store.AppendValues(read.GetString("nom"), read.GetInt64("idservice").ToString());
 			}
 			this._cbxService.Model = store;
@@ -74,6 +75,13 @@ namespace mediatek
 
 			Staff staff = new Staff(-1, this._txtLastName.Text, this._txtFirstName.Text,
 				this._txtPhone.Text, this._txtEmail.Text, long.Parse(this._cbxService.ActiveId));
+
+			// I wanted to only use the ComboBox's ListStore to avoid duplicating the dictionary,
+			// but the GTK# binding is broken and iterating it using the IEnumator causes
+			// what looks like an invalid linked tree read.
+			// See https://github.com/GtkSharp/GtkSharp/issues/399
+			// We set the service string here because we display this staff record in the main table.
+			staff.Service = this._serviceNames.GetValueOrDefault(staff.IdService);
 
 			cmd.Parameters.AddWithValue("nom", this._txtLastName.Text);
 			cmd.Parameters.AddWithValue("prenom", this._txtFirstName.Text);
