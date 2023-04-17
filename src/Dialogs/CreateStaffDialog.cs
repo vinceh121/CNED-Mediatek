@@ -89,7 +89,8 @@ namespace mediatek
 			}
 			else // on success
 			{
-				this._mediatek.GetMainWindow().AppendStaff(staff);
+				// set ID in record, which is still -1, to the auto increment
+				this._mediatek.GetMainWindow().AppendStaff(staff with { Id = cmd.LastInsertedId });
 			}
 		}
 	}
