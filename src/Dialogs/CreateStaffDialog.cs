@@ -72,6 +72,9 @@ namespace mediatek
 				+ "(@nom, @prenom, @tel, @mail, @idservice);",
 				this._mediatek.GetConnection());
 
+			Staff staff = new Staff(-1, this._txtLastName.Text, this._txtFirstName.Text,
+				this._txtPhone.Text, this._txtEmail.Text, long.Parse(this._cbxService.ActiveId));
+
 			cmd.Parameters.AddWithValue("nom", this._txtLastName.Text);
 			cmd.Parameters.AddWithValue("prenom", this._txtFirstName.Text);
 			cmd.Parameters.AddWithValue("tel", this._txtPhone.Text);
@@ -83,6 +86,10 @@ namespace mediatek
 			{
 				MessageDialog diag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok, false, "Error: inserted wrong number of rows", new object[0]);
 				diag.ShowAll();
+			}
+			else // on success
+			{
+				this._mediatek.GetMainWindow().AppendStaff(staff);
 			}
 		}
 	}

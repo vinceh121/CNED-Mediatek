@@ -157,6 +157,11 @@ namespace mediatek
 			return this._app;
 		}
 
+		public MainWindow GetMainWindow()
+		{
+			return this._win;
+		}
+
 		public MySqlConnection GetConnection()
 		{
 			return this._dbConn;

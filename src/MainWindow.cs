@@ -6,7 +6,7 @@ using UI = Gtk.Builder.ObjectAttribute;
 
 namespace mediatek
 {
-	class MainWindow : ApplicationWindow
+	public class MainWindow : ApplicationWindow
 	{
 		private Mediatek _mediatek;
 		[UI] private Toolbar _toolbarStaff = null;
@@ -101,7 +101,8 @@ namespace mediatek
 			}
 
 			// delete in db worked, now delete in ui
-			foreach (TreePath p in paths) {
+			foreach (TreePath p in paths)
+			{
 				this._staffTree.Model.EmitRowDeleted(p);
 			}
 		}
@@ -115,23 +116,32 @@ namespace mediatek
 
 			ListStore model = new ListStore(GLib.GType.Int64, GLib.GType.String, GLib.GType.String, GLib.GType.String,
 				GLib.GType.String, GLib.GType.String, GLib.GType.Boolean);
+			this._staffTree.Model = model;
 
 			while (await reader.ReadAsync())
 			{
 				Staff staff = EntityMapper.MapFromRow<Staff>(reader);
-				int i = 0;
-				TreeIter iter = model.Append();
-				model.SetValue(iter, i++, staff.Id);
-				model.SetValue(iter, i++, staff.FirstName);
-				model.SetValue(iter, i++, staff.LastName);
-				model.SetValue(iter, i++, staff.Phone);
-				model.SetValue(iter, i++, staff.Email);
-				model.SetValue(iter, i++, staff.Service);
-				// todo leave column
-				model.SetValue(iter, i++, new Random().NextSingle() > 0.5f);
+				this.AppendStaff(staff);
 			}
+		}
 
-			this._staffTree.Model = model;
+		/// <summary>
+		/// Appends a new row to the staff TreeView
+		/// </summary>
+		/// <param name="staff">Staff record to display</param>
+		public void AppendStaff(Staff staff)
+		{
+			ListStore model = this._staffTree.Model as ListStore;
+			int i = 0;
+			TreeIter iter = model.Append();
+			model.SetValue(iter, i++, staff.Id);
+			model.SetValue(iter, i++, staff.FirstName);
+			model.SetValue(iter, i++, staff.LastName);
+			model.SetValue(iter, i++, staff.Phone);
+			model.SetValue(iter, i++, staff.Email);
+			model.SetValue(iter, i++, staff.Service);
+			// todo leave column
+			model.SetValue(iter, i++, new Random().NextSingle() > 0.5f);
 		}
 
 		private void Window_DeleteEvent(object sender, DeleteEventArgs a)
