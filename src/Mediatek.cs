@@ -96,14 +96,16 @@ namespace mediatek
 		/// <param name="username">MySql username</param>
 		/// <param name="password">MySql password</param>
 		/// <param name="database">MySql database</param>
-		public async Task Login(string host, string username, string password, string database)
+		/// <param name="sslMode">Connection SSL policy</param>
+		public async Task Login(string host, string username, string password, string database, MySqlSslMode sslMode)
 		{
 			var connString = new MySqlConnectionStringBuilder()
 			{
 				Server = host,
 				UserID = username,
 				Password = password,
-				Database = database
+				Database = database,
+				SslMode = sslMode
 			};
 
 			this._dbConn = new MySqlConnection(connString.ToString());
