@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using MySqlConnector;
 
-namespace mediatek
+namespace Mediatek.Mapper
 {
 	public class EntityMapper
 	{

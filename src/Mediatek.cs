@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Gtk;
 using MySqlConnector;
 
-namespace mediatek
+namespace Mediatek
 {
 	/// <summary>
 	/// GLib signals:

@@ -1,4 +1,6 @@
-namespace mediatek
+using Mediatek.Mapper;
+
+namespace Mediatek
 {
 	public record Staff(
 		[DbAttribute("idpersonnel")] long Id,

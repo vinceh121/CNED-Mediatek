@@ -4,7 +4,9 @@ using Gtk;
 using MySqlConnector;
 using UI = Gtk.Builder.ObjectAttribute;
 
-namespace mediatek
+using Mediatek.Mapper;
+
+namespace Mediatek
 {
 	public class MainWindow : ApplicationWindow
 	{

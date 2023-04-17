@@ -1,4 +1,4 @@
-namespace mediatek
+namespace Mediatek.Mapper
 {
 	[System.AttributeUsage(System.AttributeTargets.Parameter | System.AttributeTargets.Property,
 		Inherited = false, AllowMultiple = false)]
