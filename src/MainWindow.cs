@@ -37,7 +37,7 @@ namespace Mediatek
 			GLib.SimpleAction staffDeleteAction = new GLib.SimpleAction("staffDelete", null);
 			staffDeleteAction.Activated += StaffDeleteActivated;
 			staffDeleteAction.Enabled = false;
-			this.Application.SetAccelsForAction("win.staffDelete", new string[] { "Delete" });
+			this.Application.SetAccelsForAction("win.staffDelete", new string[] { "Delete", "<Ctrl>D" });
 			this.AddAction(staffDeleteAction);
 
 			GLib.SimpleAction actionEditStaff = new GLib.SimpleAction("staffEdit", null);
