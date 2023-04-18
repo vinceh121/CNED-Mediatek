@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Gtk;
 using MySqlConnector;
 
+using Mediatek.Controllers;
 using Mediatek.Dialogs;
 
 namespace Mediatek
@@ -34,6 +35,9 @@ namespace Mediatek
 		private Application _app;
 		private MainWindow _win;
 		private MySqlConnection _dbConn;
+
+		// controllers
+		private StaffController _staffController;
 
 		[STAThread]
 		public static void Main(string[] args)
@@ -131,6 +135,9 @@ namespace Mediatek
 			{
 				((GLib.SimpleAction)this._win.LookupAction(act)).Enabled = true;
 			}
+
+			// create controllers only once we loggedin
+			this._staffController = new StaffController(this);
 		}
 
 		private void StaffCreateActivated(object sender, EventArgs e)
@@ -170,6 +177,11 @@ namespace Mediatek
 		public MySqlConnection GetConnection()
 		{
 			return this._dbConn;
+		}
+
+		public StaffController GetStaffController()
+		{
+			return this._staffController;
 		}
 
 		public static void ShowAbout(Window transientFor)

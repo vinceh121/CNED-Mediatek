@@ -32,12 +32,29 @@ namespace Mediatek.Dialogs
 			this.LoadServices();
 
 			this._btnCancel.Clicked += (_, _) => this.Destroy();
-			this._btnCreateStaff.Clicked += CreateStaffActivated;
+			this._btnCreateStaff.Clicked += (object sender, EventArgs args) =>
+			{
+				try
+				{
+					this.CreateStaffActivated(sender, args);
+				}
+				catch (MySqlException e)
+				{
+					this.InsertErr(e);
+				}
+			};
 
 			this._btnCreateStaffAndClose.Clicked += (object sender, EventArgs args) =>
 			{
-				this.CreateStaffActivated(sender, args);
-				this.Destroy();
+				try
+				{
+					this.CreateStaffActivated(sender, args);
+					this.Destroy();
+				}
+				catch (MySqlException e)
+				{
+					this.InsertErr(e);
+				}
 			};
 		}
 
@@ -70,11 +87,6 @@ namespace Mediatek.Dialogs
 
 		private async void CreateStaffActivated(object sender, EventArgs args)
 		{
-			using MySqlCommand cmd = new MySqlCommand(
-				"INSERT INTO personnel (nom, prenom, tel, mail, idservice) VALUES "
-				+ "(@nom, @prenom, @tel, @mail, @idservice);",
-				this._mediatek.GetConnection());
-
 			Staff staff = new Staff(-1, this._txtLastName.Text, this._txtFirstName.Text,
 				this._txtPhone.Text, this._txtEmail.Text, long.Parse(this._cbxService.ActiveId));
 
@@ -85,23 +97,16 @@ namespace Mediatek.Dialogs
 			// We set the service string here because we display this staff record in the main table.
 			staff.Service = this._serviceNames.GetValueOrDefault(staff.IdService);
 
-			cmd.Parameters.AddWithValue("nom", this._txtLastName.Text);
-			cmd.Parameters.AddWithValue("prenom", this._txtFirstName.Text);
-			cmd.Parameters.AddWithValue("tel", this._txtPhone.Text);
-			cmd.Parameters.AddWithValue("mail", this._txtEmail.Text);
-			cmd.Parameters.AddWithValue("idservice", long.Parse(this._cbxService.ActiveId));
+			using MySqlCommand cmd = await this._mediatek.GetStaffController().Insert(staff);
 
-			int affectedRows = await cmd.ExecuteNonQueryAsync();
-			if (affectedRows != 1)
-			{
-				MessageDialog diag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok, false, "Error: inserted wrong number of rows", new object[0]);
-				diag.ShowAll();
-			}
-			else // on success
-			{
-				// set ID in record, which is still -1, to the auto increment
-				this._mediatek.GetMainWindow().AppendStaff(staff with { Id = cmd.LastInsertedId });
-			}
+			// set ID in record, which is still -1, to the auto increment
+			this._mediatek.GetMainWindow().AppendStaff(staff with { Id = cmd.LastInsertedId });
+		}
+
+		private void InsertErr(object msg)
+		{
+			MessageDialog diag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok, false, "N'a pas pu insérer le personnel: {0}", new object[] { msg });
+			diag.ShowAll();
 		}
 	}
 }
