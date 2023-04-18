@@ -4,10 +4,11 @@ using Mediatek.Mapper;
 namespace Mediatek.Entities
 {
 	public record Leave(
-		DateTime Start,
-		DateTime End,
-		long IdStaff,
-		long IdReason
+		[DbAttribute("idabsence")] long Id,
+		[DbAttribute("datedebut")] DateTime Start,
+		[DbAttribute("datefin")] DateTime End,
+		[DbAttribute("idpersonnel")] long IdStaff,
+		[DbAttribute("idmotif")] long IdReason
 	)
 	{
 		public Staff Staff { get; set; }

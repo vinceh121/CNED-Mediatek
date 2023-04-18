@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS personnel (
 	PRIMARY KEY (idpersonnel)
 );
 
-
 CREATE TABLE IF NOT EXISTS motif (
 	idmotif INT NOT NULL AUTO_INCREMENT,
 	libelle TEXT NOT NULL UNIQUE,
@@ -27,13 +26,15 @@ CREATE TABLE IF NOT EXISTS responsable (
 );
 
 CREATE TABLE IF NOT EXISTS absences (
+	idabsence INT NOT NULL AUTO_INCREMENT,
 	datedebut DATETIME NOT NULL,
-	datefin DATETIME,
+	datefin DATETIME NOT NULL,
 	idpersonnel INT NOT NULL,
 	idmotif INT NOT NULL,
 	FOREIGN KEY (idpersonnel) REFERENCES personnel (idpersonnel),
 	FOREIGN KEY (idmotif) REFERENCES motif (idmotif),
-	PRIMARY KEY (datedebut)
+	PRIMARY KEY (idabsence),
+	CONSTRAINT UC_ABSPERSO UNIQUE (idabsence, idpersonnel)
 );
 
 -- insertion of defaults
