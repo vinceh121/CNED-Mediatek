@@ -21,6 +21,8 @@ namespace Mediatek.Controllers
 
 		public async IAsyncEnumerable<T> FetchAll()
 		{
+			// table name can't be safetly inserted using a prepared statement
+			// since it's only in-code constants it should be fine
 			using MySqlCommand cmd = new MySqlCommand("SELECT * FROM " + this._table + ";", this._connection);
 
 			using MySqlDataReader read = await cmd.ExecuteReaderAsync();
