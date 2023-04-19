@@ -37,8 +37,8 @@ jobs:
     - name: Execute unit tests
       run: dotnet test
       
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: artifacts-${{matrix.os}}-${{matrix.configuration}}-${{matrix.dotnetver}}
-        path: bin
+#    - name: Upload artifacts
+#      uses: actions/upload-artifact@v3
+#      with:
+#        name: artifacts-${{matrix.os}}-${{matrix.configuration}}-${{matrix.dotnetver}}
+#        path: bin
