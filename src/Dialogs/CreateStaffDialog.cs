@@ -105,7 +105,8 @@ namespace Mediatek.Dialogs
 
 		private void InsertErr(object msg)
 		{
-			MessageDialog diag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok, false, "N'a pas pu insérer le personnel: {0}", new object[] { msg });
+			MessageDialog diag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error,
+				ButtonsType.Ok, false, "N'a pas pu insérer le personnel: {0}", new object[] { msg });
 			diag.ShowAll();
 		}
 	}

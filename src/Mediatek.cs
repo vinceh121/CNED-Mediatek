@@ -116,6 +116,10 @@ namespace Mediatek
 
 			this._dbConn = new MySqlConnection(connString.ToString());
 			await this._dbConn.OpenAsync();
+
+			// create controllers only once we loggedin
+			this._staffController = new StaffController(this);
+
 			// trigger LoggedIn event
 			this.LoggedIn?.Invoke(this, null);
 
@@ -135,9 +139,6 @@ namespace Mediatek
 			{
 				((GLib.SimpleAction)this._win.LookupAction(act)).Enabled = true;
 			}
-
-			// create controllers only once we loggedin
-			this._staffController = new StaffController(this);
 		}
 
 		private void StaffCreateActivated(object sender, EventArgs e)

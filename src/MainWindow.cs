@@ -4,7 +4,7 @@ using Gtk;
 using MySqlConnector;
 using UI = Gtk.Builder.ObjectAttribute;
 
-using Mediatek.Mapper;
+using Mediatek.Controllers;
 using Mediatek.Entities;
 using Mediatek.Dialogs;
 
@@ -129,19 +129,13 @@ namespace Mediatek
 
 		private async void LoggedInActivated(object sender, EventArgs e)
 		{
-			using MySqlCommand cmd = new MySqlCommand("SELECT personnel.*, service.nom AS nomservice "
-				+ " FROM personnel INNER JOIN service ON personnel.idservice = service.idservice;",
-				this._mediatek.GetConnection());
-			using MySqlDataReader reader = await cmd.ExecuteReaderAsync();
-
 			ListStore model = new ListStore(GLib.GType.Int64, GLib.GType.String, GLib.GType.String, GLib.GType.String,
 				GLib.GType.String, GLib.GType.String, GLib.GType.Boolean);
 			this._staffTree.Model = model;
 
-			while (await reader.ReadAsync())
+			await foreach (object staff in this._mediatek.GetStaffController().FetchAllWithServiceLeave())
 			{
-				Staff staff = EntityMapper.MapFromRow<Staff>(reader);
-				this.AppendStaff(staff);
+				this.AppendStaff((Staff)staff);
 			}
 		}
 

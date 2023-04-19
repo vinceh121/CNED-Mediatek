@@ -38,7 +38,16 @@ namespace Mediatek.Dialogs
 
 			this._btnEditStaff.Clicked += (object sender, EventArgs args) =>
 			{
-				this.CreateStaffActivated(sender, args);
+				try
+				{
+					this.CreateStaffActivated(sender, args);
+				}
+				catch (MySqlException e)
+				{
+					MessageDialog diag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error,
+						ButtonsType.Ok, false, "N'a pas pu modifier le personnel: {0}", new object[] { e });
+					diag.ShowAll();
+				}
 
 			};
 		}
@@ -72,7 +81,8 @@ namespace Mediatek.Dialogs
 			this.LoadStaff();
 		}
 
-		private async void LoadStaff() {
+		private async void LoadStaff()
+		{
 			using MySqlCommand cmdStaff = new MySqlCommand("SELECT * FROM personnel WHERE idpersonnel=@id;", this._mediatek.GetConnection());
 			cmdStaff.Parameters.AddWithValue("id", this._editingId);
 			using MySqlDataReader readStaff = await cmdStaff.ExecuteReaderAsync();
@@ -92,32 +102,14 @@ namespace Mediatek.Dialogs
 
 		private async void CreateStaffActivated(object sender, EventArgs args)
 		{
-			using MySqlCommand cmd = new MySqlCommand(
-				"UPDATE personnel SET nom=@nom, prenom=@prenom, tel=@tel, mail=@mail, idservice=@idservice WHERE idpersonnel=@id;",
-				this._mediatek.GetConnection());
-
 			Staff staff = new Staff(this._editing.Id, this._txtLastName.Text, this._txtFirstName.Text,
 				this._txtPhone.Text, this._txtEmail.Text, long.Parse(this._cbxService.ActiveId));
 
 			staff.Service = this._serviceNames.GetValueOrDefault(staff.IdService);
 
-			cmd.Parameters.AddWithValue("id", this._editing.Id);
-			cmd.Parameters.AddWithValue("nom", this._txtLastName.Text);
-			cmd.Parameters.AddWithValue("prenom", this._txtFirstName.Text);
-			cmd.Parameters.AddWithValue("tel", this._txtPhone.Text);
-			cmd.Parameters.AddWithValue("mail", this._txtEmail.Text);
-			cmd.Parameters.AddWithValue("idservice", long.Parse(this._cbxService.ActiveId));
+			using MySqlCommand cmd = await this._mediatek.GetStaffController().Update(staff);
 
-			int affectedRows = await cmd.ExecuteNonQueryAsync();
-			if (affectedRows != 1)
-			{
-				MessageDialog diag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok, false, "Error: inserted wrong number of rows", new object[0]);
-				diag.ShowAll();
-			}
-			else // on success
-			{
-				this.Destroy();
-			}
+			this.Destroy();
 		}
 	}
 }
