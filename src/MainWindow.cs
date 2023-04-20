@@ -16,6 +16,11 @@ namespace Mediatek
 		[UI] private Toolbar _toolbarStaff = null;
 		[UI] private TreeView _staffTree = null;
 		[UI] private Calendar _leaveCalendar = null;
+		// arrays of sets to store staff names on leave for each day of the month
+		// a set is used to prevent duplicates
+		private ISet<string>[] _calendarDetails;
+		// need to store this so the DetailFunc can avoid returning the string for another month
+		private DateTime _currentMonth;
 
 		public MainWindow(Mediatek mediatek) : this(mediatek, new Builder("MainWindow.glade")) { }
 
@@ -142,7 +147,20 @@ namespace Mediatek
 			this.RefreshLeaveCalendar();
 
 			// add calender event listeners only after we have a connection
-			this._leaveCalendar.MonthChanged += (_, _) => RefreshLeaveCalendar();
+			this._leaveCalendar.MonthChanged += (_, _) => this.RefreshLeaveCalendar();
+			this._leaveCalendar.DetailFunc = this.CalendarDetail;
+		}
+
+		private string CalendarDetail(Calendar calendar, uint year, uint month, uint day)
+		{
+			if (this._calendarDetails == null
+				|| day >= this._calendarDetails.Length
+				|| this._calendarDetails[day - 1] == null
+				|| this._currentMonth.Month != month + 1) // GTK month is 0-based, but C#'s is 1-based!
+			{
+				return null;
+			}
+			return String.Join("\n", this._calendarDetails[day - 1]);
 		}
 
 		public async void RefreshLeaveCalendar()
@@ -152,15 +170,19 @@ namespace Mediatek
 			this._leaveCalendar.ClearMarks();
 
 			DateTime selected = this._leaveCalendar.Date;
-			DateTime month = new DateTime(selected.Year, selected.Month, 1);
+			this._currentMonth = new DateTime(selected.Year, selected.Month, 1);
 
-			IAsyncEnumerable<Leave> leaves = this._mediatek.GetLeaveController().FetchInMonth(month);
+			int daysInMonth = DateTime.DaysInMonth(this._currentMonth.Year, this._currentMonth.Month);
+
+			this._calendarDetails = new ISet<string>[daysInMonth];
+
+			IAsyncEnumerable<Leave> leaves = this._mediatek.GetLeaveController().FetchInMonth(this._currentMonth);
 
 			await foreach (Leave leave in leaves)
 			{
 				// leave start as day of current month
 				int monthStart;
-				if (leave.Start < month)
+				if (leave.Start < this._currentMonth)
 				{ // if the leave starts before this month
 					monthStart = 1; // highlight everyday until end
 				}
@@ -171,19 +193,24 @@ namespace Mediatek
 
 				// ditto for end
 				int monthEnd;
-				if (leave.End > month)
+				if (leave.End > this._currentMonth)
 				{
-					monthEnd = DateTime.DaysInMonth(month.Year, month.Month);
+					monthEnd = daysInMonth;
 				}
 				else
 				{
 					monthEnd = leave.End.Day;
 				}
 
-				Console.WriteLine(leave);
 				for (int i = monthStart; i <= monthEnd; i++)
 				{
 					this._leaveCalendar.MarkDay((uint)i);
+
+					if (this._calendarDetails[i - 1] == null)
+					{
+						this._calendarDetails[i - 1] = new HashSet<string>();
+					}
+					this._calendarDetails[i - 1].Add(leave.Staff.LastName + " " + leave.Staff.FirstName);
 				}
 			}
 

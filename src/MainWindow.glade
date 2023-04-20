@@ -96,12 +96,16 @@ MediaTek, un exercice d'application métier
           </packing>
         </child>
         <child>
-          <object class="GtkCalendar" id="_leaveCalendar">
+          <object class="GtkViewport">
             <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="year">2023</property>
-            <property name="month">3</property>
-            <property name="day">19</property>
+            <property name="can-focus">False</property>
+            <child>
+              <object class="GtkCalendar" id="_leaveCalendar">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="detail-height-rows">3</property>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="position">1</property>
