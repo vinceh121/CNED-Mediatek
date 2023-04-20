@@ -84,6 +84,8 @@ namespace Mediatek.Mapper
 					return reader.GetInt32(columnName);
 				case TypeCode.Boolean:
 					return reader.GetBoolean(columnName);
+				case TypeCode.DateTime:
+					return reader.GetDateTime(columnName);
 				default:
 					throw new InvalidOperationException("Cannot get type " + type + " from SQL");
 			}

@@ -38,6 +38,7 @@ namespace Mediatek
 
 		// controllers
 		private StaffController _staffController;
+		private LeaveController _leaveController;
 
 		[STAThread]
 		public static void Main(string[] args)
@@ -119,6 +120,7 @@ namespace Mediatek
 
 			// create controllers only once we loggedin
 			this._staffController = new StaffController(this);
+			this._leaveController = new LeaveController(this);
 
 			// trigger LoggedIn event
 			this.LoggedIn?.Invoke(this, null);
@@ -183,6 +185,11 @@ namespace Mediatek
 		public StaffController GetStaffController()
 		{
 			return this._staffController;
+		}
+
+		public LeaveController GetLeaveController()
+		{
+			return this._leaveController;
 		}
 
 		public static void ShowAbout(Window transientFor)

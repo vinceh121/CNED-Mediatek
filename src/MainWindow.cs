@@ -15,6 +15,7 @@ namespace Mediatek
 		private Mediatek _mediatek;
 		[UI] private Toolbar _toolbarStaff = null;
 		[UI] private TreeView _staffTree = null;
+		[UI] private Calendar _leaveCalendar = null;
 
 		public MainWindow(Mediatek mediatek) : this(mediatek, new Builder("MainWindow.glade")) { }
 
@@ -137,6 +138,56 @@ namespace Mediatek
 			{
 				this.AppendStaff((Staff)staff);
 			}
+
+			this.RefreshLeaveCalendar();
+
+			// add calender event listeners only after we have a connection
+			this._leaveCalendar.MonthChanged += (_, _) => RefreshLeaveCalendar();
+		}
+
+		public async void RefreshLeaveCalendar()
+		{
+			this._leaveCalendar.Sensitive = false;
+
+			this._leaveCalendar.ClearMarks();
+
+			DateTime selected = this._leaveCalendar.Date;
+			DateTime month = new DateTime(selected.Year, selected.Month, 1);
+
+			IAsyncEnumerable<Leave> leaves = this._mediatek.GetLeaveController().FetchInMonth(month);
+
+			await foreach (Leave leave in leaves)
+			{
+				// leave start as day of current month
+				int monthStart;
+				if (leave.Start < month)
+				{ // if the leave starts before this month
+					monthStart = 1; // highlight everyday until end
+				}
+				else
+				{
+					monthStart = leave.Start.Day;
+				}
+
+				// ditto for end
+				int monthEnd;
+				if (leave.End > month)
+				{
+					monthEnd = DateTime.DaysInMonth(month.Year, month.Month);
+				}
+				else
+				{
+					monthEnd = leave.End.Day;
+				}
+
+				Console.WriteLine(leave);
+				for (int i = monthStart; i <= monthEnd; i++)
+				{
+					this._leaveCalendar.MarkDay((uint)i);
+				}
+			}
+
+			this._leaveCalendar.Sensitive = true;
 		}
 
 		/// <summary>
