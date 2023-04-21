@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS absences (
 	datefin DATETIME NOT NULL,
 	idpersonnel INT NOT NULL,
 	idmotif INT NOT NULL,
-	FOREIGN KEY (idpersonnel) REFERENCES personnel (idpersonnel),
+	FOREIGN KEY (idpersonnel) REFERENCES personnel (idpersonnel)
+	ON DELETE CASCADE,
 	FOREIGN KEY (idmotif) REFERENCES motif (idmotif),
 	PRIMARY KEY (idabsence),
 	CONSTRAINT UC_ABSPERSO UNIQUE (idabsence, idpersonnel)
