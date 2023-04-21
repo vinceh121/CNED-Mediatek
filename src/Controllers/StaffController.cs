@@ -13,8 +13,12 @@ namespace Mediatek.Controllers
 
 		public async IAsyncEnumerable<Staff> FetchAllWithServiceLeave()
 		{
-			using MySqlCommand cmd = new MySqlCommand("SELECT personnel.*, service.nom AS nomservice "
-				+ " FROM personnel INNER JOIN service ON personnel.idservice = service.idservice;", this._connection);
+			using MySqlCommand cmd = new MySqlCommand("SELECT personnel.*, service.nom AS nomservice, (absences.idabsence IS NOT NULL) AS absent "
+				+ "FROM personnel INNER JOIN service ON personnel.idservice = service.idservice "
+				+ "LEFT JOIN absences ON personnel.idpersonnel = absences.idpersonnel "
+					+ "AND absences.datedebut <= CURDATE() AND absences.datefin >= CURDATE() " // joins leaves for today written in `absent`
+				+ "GROUP BY personnel.idpersonnel;", // this prevents duplicates caused when a staff has multiple leaves marked for today
+				this._connection);
 
 			using MySqlDataReader read = await cmd.ExecuteReaderAsync();
 			while (await read.ReadAsync()) {

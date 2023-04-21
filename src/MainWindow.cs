@@ -232,8 +232,7 @@ namespace Mediatek
 			model.SetValue(iter, i++, staff.Phone);
 			model.SetValue(iter, i++, staff.Email);
 			model.SetValue(iter, i++, staff.Service);
-			// todo leave column
-			model.SetValue(iter, i++, new Random().NextSingle() > 0.5f);
+			model.SetValue(iter, i++, staff.IsCurrentlyOut);
 		}
 
 		private void Window_DeleteEvent(object sender, DeleteEventArgs a)
