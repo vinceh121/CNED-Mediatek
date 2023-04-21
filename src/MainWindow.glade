@@ -39,6 +39,7 @@ MediaTek, un exercice d'application métier
               <object class="GtkToolbar" id="_toolbarStaff">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="toolbar-style">both</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -96,15 +97,33 @@ MediaTek, un exercice d'application métier
           </packing>
         </child>
         <child>
-          <object class="GtkViewport">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkToolbar" id="_toolbarLeave">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="toolbar-style">both</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
             <child>
               <object class="GtkCalendar" id="_leaveCalendar">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="detail-height-rows">3</property>
               </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
             </child>
           </object>
           <packing>

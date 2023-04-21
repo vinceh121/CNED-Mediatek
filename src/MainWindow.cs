@@ -14,6 +14,7 @@ namespace Mediatek
 	{
 		private Mediatek _mediatek;
 		[UI] private Toolbar _toolbarStaff = null;
+		[UI] private Toolbar _toolbarLeave = null;
 		[UI] private TreeView _staffTree = null;
 		[UI] private Calendar _leaveCalendar = null;
 		// arrays of sets to store staff names on leave for each day of the month
@@ -34,11 +35,7 @@ namespace Mediatek
 
 			DeleteEvent += Window_DeleteEvent;
 
-			ToolButton toolAddStaff = new ToolButton(null, "Ajouter personnel");
-			toolAddStaff.Sensitive = true;
-			toolAddStaff.IconName = "document-new";
-			toolAddStaff.ActionName = "app.staffCreate";
-			_toolbarStaff.Add(toolAddStaff);
+			this.CreateToolBars();
 
 			this._mediatek.LoggedIn += LoggedInActivated;
 
@@ -53,6 +50,47 @@ namespace Mediatek
 			actionEditStaff.Enabled = false;
 			this.Application.SetAccelsForAction("win.staffEdit", new string[] { "<Ctrl>E" });
 			this.AddAction(actionEditStaff);
+		}
+
+		private void CreateToolBars()
+		{
+			// staff
+			ToolButton toolAddStaff = new ToolButton(null, "Ajouter personnel");
+			toolAddStaff.Sensitive = true;
+			toolAddStaff.IconName = "document-new";
+			toolAddStaff.ActionName = "app.staffCreate";
+			_toolbarStaff.Add(toolAddStaff);
+
+			ToolButton toolEditStaff = new ToolButton(null, "Modifier personnel");
+			toolEditStaff.Sensitive = true;
+			toolEditStaff.IconName = "document-edit";
+			toolEditStaff.ActionName = "win.staffEdit";
+			_toolbarStaff.Add(toolEditStaff);
+
+			ToolButton toolDeleteStaff = new ToolButton(null, "Supprimer personnel");
+			toolDeleteStaff.Sensitive = true;
+			toolDeleteStaff.IconName = "edit-delete";
+			toolDeleteStaff.ActionName = "win.staffDelete";
+			_toolbarStaff.Add(toolDeleteStaff);
+
+			// leave
+			ToolButton toolAddLeave = new ToolButton(null, "Ajouter absence");
+			toolAddLeave.Sensitive = true;
+			toolAddLeave.IconName = "document-new";
+			toolAddLeave.ActionName = "app.leaveCreate";
+			_toolbarLeave.Add(toolAddLeave);
+
+			ToolButton toolEditLeave = new ToolButton(null, "Modifier absence");
+			toolEditLeave.Sensitive = true;
+			toolEditLeave.IconName = "document-edit";
+			toolEditLeave.ActionName = "win.leaveEdit";
+			_toolbarLeave.Add(toolEditLeave);
+
+			ToolButton toolDeleteLeave = new ToolButton(null, "Supprimer absence");
+			toolDeleteLeave.Sensitive = true;
+			toolDeleteLeave.IconName = "edit-delete";
+			toolDeleteLeave.ActionName = "win.leaveDelete";
+			_toolbarLeave.Add(toolDeleteLeave);
 		}
 
 		private void CreateColumns()
