@@ -39,6 +39,7 @@ namespace Mediatek
 		// controllers
 		private StaffController _staffController;
 		private LeaveController _leaveController;
+		private ManagerController _managerController;
 
 		[STAThread]
 		public static void Main(string[] args)
@@ -104,8 +105,15 @@ namespace Mediatek
 		/// <param name="password">MySql password</param>
 		/// <param name="database">MySql database</param>
 		/// <param name="sslMode">Connection SSL policy</param>
-		public async Task Login(string host, string username, string password, string database, MySqlSslMode sslMode)
+		public async Task Login(string host, string username, string password, string database, MySqlSslMode sslMode,
+			string managerUsername, string managerPassword)
 		{
+			if (this._dbConn != null)
+			{
+				await this._dbConn.DisposeAsync();
+				this._dbConn = null;
+			}
+
 			var connString = new MySqlConnectionStringBuilder()
 			{
 				Server = host,
@@ -117,6 +125,14 @@ namespace Mediatek
 
 			this._dbConn = new MySqlConnection(connString.ToString());
 			await this._dbConn.OpenAsync();
+
+			this._managerController = new ManagerController(this);
+
+			bool loginCheck = await this._managerController.VerifyAuth(managerUsername, managerPassword);
+			if (!loginCheck)
+			{
+				throw new UnauthorizedAccessException("Mot-de-passe responsable ou login de responsable invalide");
+			}
 
 			// create controllers only once we loggedin
 			this._staffController = new StaffController(this);

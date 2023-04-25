@@ -14,6 +14,8 @@ namespace Mediatek.Dialogs
 		[UI] private Entry _txtPassword = null;
 		[UI] private Entry _txtDatabase = null;
 		[UI] private ComboBox _cbxSslMode = null;
+		[UI] private Entry _txtManagerUsername = null;
+		[UI] private Entry _txtManagerPassword = null;
 
 		public LoginDialog(Mediatek program) : this(new Builder("LoginDialog.glade"))
 		{
@@ -58,11 +60,23 @@ namespace Mediatek.Dialogs
 			try
 			{
 				await this._program.Login(this._txtHost.Text, this._txtUsername.Text, this._txtPassword.Text,
-					this._txtDatabase.Text, (MySqlConnector.MySqlSslMode)int.Parse(this._cbxSslMode.ActiveId));
+					this._txtDatabase.Text, (MySqlConnector.MySqlSslMode)int.Parse(this._cbxSslMode.ActiveId),
+					this._txtManagerUsername.Text, this._txtManagerPassword.Text);
 				this.Destroy();
+			}
+			catch (UnauthorizedAccessException ex)
+			{
+				Console.WriteLine(ex);
+				MessageDialog msg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error,
+									ButtonsType.Ok, true, "<b>{0}</b>", new object[] { ex.Message });
+				msg.Show();
+				msg.Run();
+				msg.Destroy();
+				this.Sensitive = true;
 			}
 			catch (Exception ex)
 			{
+				Console.WriteLine(ex);
 				MessageDialog msg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error,
 					ButtonsType.Ok, true, "<b>Échec de la connexion a la base de donnés</b>\n{0}", new object[] { ex });
 				msg.Show();

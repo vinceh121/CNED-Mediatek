@@ -150,8 +150,9 @@ MediaTek, un exercice d'application métier
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Mot-de-passe</property>
+                    <property name="label" translatable="yes">Mot-de-passe base de donnés</property>
                     <property name="justify">right</property>
+                    <property name="wrap">True</property>
                     <property name="xalign">1</property>
                   </object>
                 </child>
@@ -170,6 +171,7 @@ MediaTek, un exercice d'application métier
                     <property name="has-focus">True</property>
                     <property name="visibility">False</property>
                     <property name="invisible-char">●</property>
+                    <property name="text" translatable="yes">A15T</property>
                     <property name="input-purpose">password</property>
                   </object>
                 </child>
@@ -234,6 +236,69 @@ MediaTek, un exercice d'application métier
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="id-column">0</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkFlowBoxChild">
+                <property name="width-request">100</property>
+                <property name="height-request">80</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Login responsable</property>
+                    <property name="xalign">1</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkFlowBoxChild">
+                <property name="width-request">100</property>
+                <property name="height-request">80</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <child>
+                  <object class="GtkEntry" id="_txtManagerUsername">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkFlowBoxChild">
+                <property name="width-request">100</property>
+                <property name="height-request">80</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Mot-de-passe responsable</property>
+                    <property name="wrap">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkFlowBoxChild">
+                <property name="width-request">100</property>
+                <property name="height-request">80</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <child>
+                  <object class="GtkEntry" id="_txtManagerPassword">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="visibility">False</property>
+                    <property name="invisible-char">●</property>
+                    <property name="input-purpose">password</property>
                   </object>
                 </child>
               </object>
