@@ -168,7 +168,6 @@ MediaTek, un exercice d'application métier
                   <object class="GtkEntry" id="_txtPassword">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="has-focus">True</property>
                     <property name="visibility">False</property>
                     <property name="invisible-char">●</property>
                     <property name="text" translatable="yes">A15T</property>
@@ -266,6 +265,7 @@ MediaTek, un exercice d'application métier
                   <object class="GtkEntry" id="_txtManagerUsername">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="has-focus">True</property>
                   </object>
                 </child>
               </object>
