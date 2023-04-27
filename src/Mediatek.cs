@@ -152,7 +152,7 @@ namespace Mediatek
 			}
 
 			// ditto but for win. actions
-			string[] winActions = new string[] { "staffDelete", "staffEdit" };
+			string[] winActions = new string[] { "staffDelete", "staffEdit", "leaveCreate" };
 			foreach (string act in winActions)
 			{
 				((GLib.SimpleAction)this._win.LookupAction(act)).Enabled = true;

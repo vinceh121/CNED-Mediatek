@@ -47,6 +47,21 @@ MediaTek, un exercice d'application métier
       </item>
     </submenu>
     <submenu>
+      <attribute name="label" translatable="yes">_Absences</attribute>
+      <item>
+        <attribute name="label" translatable="yes">_Créer absence</attribute>
+        <attribute name="action">win.leaveCreate</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Modifier absence</attribute>
+        <attribute name="action">win.leaveEdit</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Supprimer absence</attribute>
+        <attribute name="action">win.leaveDelete</attribute>
+      </item>
+    </submenu>
+    <submenu>
       <attribute name="label" translatable="yes">_Aide</attribute>
       <item>
         <attribute name="label" translatable="yes">_À propos</attribute>

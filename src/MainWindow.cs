@@ -50,6 +50,12 @@ namespace Mediatek
 			actionEditStaff.Enabled = false;
 			this.Application.SetAccelsForAction("win.staffEdit", new string[] { "<Ctrl>E" });
 			this.AddAction(actionEditStaff);
+
+			GLib.SimpleAction actionCreateLeave = new GLib.SimpleAction("leaveCreate", null);
+			actionCreateLeave.Activated += LeaveCreateActivated;
+			actionCreateLeave.Enabled = false;
+			this.Application.SetAccelsForAction("win.leaveCreate", new string[] { "<Ctrl><Shift>N" });
+			this.AddAction(actionCreateLeave);
 		}
 
 		private void CreateToolBars()
@@ -103,6 +109,13 @@ namespace Mediatek
 			this._staffTree.AppendColumn(new TreeViewColumn("EMail", new CellRendererText(), "text", i++));
 			this._staffTree.AppendColumn(new TreeViewColumn("Service", new CellRendererText(), "text", i++));
 			this._staffTree.AppendColumn(new TreeViewColumn("Absent ajd.", new CellRendererToggle() { Activatable = false }, "active", i++));
+		}
+
+		private void LeaveCreateActivated(object sender, EventArgs e)
+		{
+			CreateLeaveDialog diag = new CreateLeaveDialog(this._mediatek);
+			diag.ShowAll();
+			diag.TransientFor = this;
 		}
 
 		private void StaffEditActivated(object sender, EventArgs e)
