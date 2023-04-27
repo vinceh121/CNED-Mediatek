@@ -113,7 +113,7 @@ namespace Mediatek
 
 		private void LeaveCreateActivated(object sender, EventArgs e)
 		{
-			CreateLeaveDialog diag = new CreateLeaveDialog(this._mediatek);
+			CreateLeaveDialog diag = new CreateLeaveDialog(this._mediatek, new Staff(-1, "Test", "Tester", "+33", "a@æ.a", 5) { Service = "aaaaa" });
 			diag.ShowAll();
 			diag.TransientFor = this;
 		}

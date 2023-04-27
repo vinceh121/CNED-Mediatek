@@ -3,6 +3,7 @@ using Gtk;
 using UI = Gtk.Builder.ObjectAttribute;
 
 using Mediatek.Components;
+using Mediatek.Entities;
 
 namespace Mediatek.Dialogs
 {
@@ -16,15 +17,19 @@ namespace Mediatek.Dialogs
 		[UI] private FlowBoxChild _boxDateStart = null;
 		[UI] private FlowBoxChild _boxDateEnd = null;
 		private DateEntry _dateStart, _dateEnd;
+		private Staff _staff;
 
-		public CreateLeaveDialog(Mediatek program) : this(new Builder("CreateLeaveDialog.glade"))
+		public CreateLeaveDialog(Mediatek program, Staff staff) : this(program, new Builder("CreateLeaveDialog.glade"), staff)
 		{
-			this._program = program;
 		}
 
-		private CreateLeaveDialog(Builder builder) : base(builder.GetRawOwnedObject("CreateLeaveDialog"))
+		private CreateLeaveDialog(Mediatek program, Builder builder, Staff staff) : base(builder.GetRawOwnedObject("CreateLeaveDialog"))
 		{
 			builder.Autoconnect(this);
+			this._program = program;
+			this._staff = staff;
+
+			this._txtStaff.Text = this._staff.FirstName + " " + this._staff.LastName;
 
 			this._btnCancel.Clicked += (_, _) => this.Dispose();
 
@@ -38,6 +43,29 @@ namespace Mediatek.Dialogs
 			{
 				Console.WriteLine(this._dateStart.Date);
 			};
+
+			this.LoadReasons();
+		}
+
+		private async void LoadReasons()
+		{
+			ListStore store = new ListStore(GLib.GType.String, GLib.GType.String);
+
+			await foreach (Reason res in this._program.GetReasonController().FetchAll())
+			{
+				store.AppendValues(res.label, res.Id);
+			}
+			this._cbxReason.Model = store;
+
+			CellRendererText txtRender = new CellRendererText();
+			this._cbxReason.PackStart(txtRender, true);
+			this._cbxReason.SetAttributes(txtRender, "text", 0);
+			this._cbxReason.AddAttribute(txtRender, "id", 1);
+
+			this._cbxReason.IdColumn = 1;
+			this._cbxReason.Active = 0;
+
+			this._cbxReason.Sensitive = true;
 		}
 	}
 }

@@ -203,6 +203,7 @@ MediaTek, un exercice d'application métier
                 <child>
                   <object class="GtkComboBox" id="_cbxReason">
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can-focus">False</property>
                     <property name="id-column">0</property>
                   </object>
