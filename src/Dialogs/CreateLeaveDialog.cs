@@ -11,6 +11,7 @@ namespace Mediatek.Dialogs
 	{
 		private Mediatek _program;
 		[UI] private Button _btnCreate = null;
+		[UI] private Button _btnCreateAndClose = null;
 		[UI] private Button _btnCancel = null;
 		[UI] private Entry _txtStaff = null;
 		[UI] private ComboBox _cbxReason = null;
@@ -39,12 +40,24 @@ namespace Mediatek.Dialogs
 			this._dateEnd = new DateEntry();
 			this._boxDateEnd.Add(this._dateEnd);
 
-			this._btnCreate.Clicked += (_, _) =>
+			this._btnCancel.Clicked += (_, _) => this.Dispose();
+
+			this._btnCreate.Clicked += (_, _) => this.CreateLeave();
+
+			this._btnCreateAndClose.Clicked += (_, _) =>
 			{
-				Console.WriteLine(this._dateStart.Date);
+				this.CreateLeave();
+				this.Dispose();
 			};
 
 			this.LoadReasons();
+		}
+
+		private async void CreateLeave()
+		{
+			Leave leave = new Leave(-1, this._dateStart.Date, this._dateEnd.Date, this._staff.Id, long.Parse(this._cbxReason.ActiveId));
+			await this._program.GetLeaveController().Insert(leave);
+			this._program.GetMainWindow().RefreshLeaveCalendar();
 		}
 
 		private async void LoadReasons()

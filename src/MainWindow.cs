@@ -111,9 +111,22 @@ namespace Mediatek
 			this._staffTree.AppendColumn(new TreeViewColumn("Absent ajd.", new CellRendererToggle() { Activatable = false }, "active", i++));
 		}
 
-		private void LeaveCreateActivated(object sender, EventArgs e)
+		private async void LeaveCreateActivated(object sender, EventArgs e)
 		{
-			CreateLeaveDialog diag = new CreateLeaveDialog(this._mediatek, new Staff(-1, "Test", "Tester", "+33", "a@æ.a", 5) { Service = "aaaaa" });
+			List<long> ids = this.GetSelectedIds();
+
+			if (ids.Count != 1)
+			{
+				MessageDialog errDiag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok,
+					false, "Sélectionnez une personne seulement",
+					new object[0]);
+				errDiag.Run();
+				errDiag.Destroy();
+				return;
+			}
+
+			Staff staff = await this._mediatek.GetStaffController().Get(ids[0]);
+			CreateLeaveDialog diag = new CreateLeaveDialog(this._mediatek, staff);
 			diag.ShowAll();
 			diag.TransientFor = this;
 		}

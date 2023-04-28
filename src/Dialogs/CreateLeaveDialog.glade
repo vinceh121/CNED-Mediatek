@@ -114,6 +114,7 @@ MediaTek, un exercice d'application métier
                 <child>
                   <object class="GtkEntry" id="_txtStaff">
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can-focus">True</property>
                     <property name="editable">False</property>
                     <property name="input-hints">GTK_INPUT_HINT_NO_SPELLCHECK | GTK_INPUT_HINT_NO_EMOJI | GTK_INPUT_HINT_NONE</property>

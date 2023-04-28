@@ -21,9 +21,23 @@ namespace Mediatek.Controllers
 				this._connection);
 
 			using MySqlDataReader read = await cmd.ExecuteReaderAsync();
-			while (await read.ReadAsync()) {
+			while (await read.ReadAsync())
+			{
 				yield return EntityMapper.MapFromRow<Staff>(read);
 			}
+		}
+
+		public async Task<Staff> Get(long id)
+		{
+			using MySqlCommand cmd = new MySqlCommand("SELECT * FROM personnel WHERE idpersonnel=@id;", this._connection);
+			cmd.Parameters.AddWithValue("id", id);
+
+			using MySqlDataReader read = await cmd.ExecuteReaderAsync();
+			if (!await read.ReadAsync())
+			{
+				return null;
+			}
+			return EntityMapper.MapFromRow<Staff>(read);
 		}
 
 		public override async Task<MySqlCommand> Insert(Staff entity)
