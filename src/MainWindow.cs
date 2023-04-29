@@ -4,7 +4,6 @@ using Gtk;
 using MySqlConnector;
 using UI = Gtk.Builder.ObjectAttribute;
 
-using Mediatek.Controllers;
 using Mediatek.Entities;
 using Mediatek.Dialogs;
 
@@ -108,7 +107,31 @@ namespace Mediatek
 			this._staffTree.AppendColumn(new TreeViewColumn("Tél.", new CellRendererText(), "text", i++));
 			this._staffTree.AppendColumn(new TreeViewColumn("EMail", new CellRendererText(), "text", i++));
 			this._staffTree.AppendColumn(new TreeViewColumn("Service", new CellRendererText(), "text", i++));
-			this._staffTree.AppendColumn(new TreeViewColumn("Absent ajd.", new CellRendererToggle() { Activatable = false }, "active", i++));
+			CellRendererToggle tgl = new CellRendererToggle();
+			tgl.Toggled += LeaveDayToggle;
+			this._staffTree.AppendColumn(new TreeViewColumn("Absent ajd.", tgl, "active", i++));
+		}
+
+		private async void LeaveDayToggle(object sender, ToggledArgs args)
+		{
+			CellRendererToggle tgl = sender as CellRendererToggle;
+
+			TreeIter iter;
+			this._staffTree.Model.GetIterFromString(out iter, args.Path);
+			long id = (long)this._staffTree.Model.GetValue(iter, 0);
+
+			if (tgl.Active)
+			{ // staff is set to be missing today, cut all today's leave
+				await foreach (Leave l in this._mediatek.GetLeaveController().FetchForDay(DateTime.Today, id))
+				{
+					this._mediatek.GetLeaveController().RemoveDay(DateTime.Today, l);
+				}
+			}
+			else
+			{ // staff is set to be here today, add a leave for today
+				Leave leave = new Leave(-1, DateTime.Today, DateTime.Today.AddDays(1), id, 0); // FIXME need reason id
+				this._mediatek.GetLeaveController().Insert(leave);
+			}
 		}
 
 		private async void LeaveCreateActivated(object sender, EventArgs e)
