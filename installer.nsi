@@ -30,7 +30,7 @@ Section "!Installer MediaTek" installmediatek
 	SectionInstType ${IT_FULL} ${IT_NORMAL} RO
 	SetOutPath $INSTDIR
 
-	File /r "bin\Release\net6.0\*"
+	File /r "bin\Release\net7.0\*"
 
 	WriteUninstaller "$INSTDIR\Uninstaller.exe"
 SectionEnd
