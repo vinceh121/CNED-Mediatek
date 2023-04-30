@@ -1,0 +1,47 @@
+name: Windows Installer
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        configuration: [Release]
+        os: [windows-latest]
+        dotnetver: [6.x]
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{matrix.dotnetver}}
+
+    - name: Compile solution
+      run: dotnet build -c ${{matrix.configuration}}
+
+    # Execute all unit tests in the solution
+    - name: Execute unit tests
+      run: dotnet test
+      
+    - name: Download GTK dlls
+      working-directory: bin/Release/net7.0
+      run: curl -LO https://raw.githubusercontent.com/GtkSharp/Dependencies/master/gtk-3.24.24.zip && unzip gtk-3.24.24.zip
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: artifacts-windows-installer
+        path: bin
