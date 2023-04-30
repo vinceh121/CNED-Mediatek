@@ -4,6 +4,7 @@
 Name "MediaTek"
 OutFile "mediatek-installer.exe"
 Unicode True
+RequestExecutionLevel user
 
 InstallDir "$LOCALAPPDATA\MediaTek"
 InstallDirRegKey HKCU "Software\MediaTek" ""
@@ -31,6 +32,9 @@ Section "!Installer MediaTek" installmediatek
 	SetOutPath $INSTDIR
 
 	File /r "bin\Release\net7.0\*"
+
+	CreateShortcut "$DESKTOP\MediaTek.lnk" "$INSTDIR\mediatek.exe"
+	CreateShortcut "$SMPROGRAMS\MediaTek.lnk" "$INSTDIR\mediatek.exe"
 
 	WriteUninstaller "$INSTDIR\Uninstaller.exe"
 SectionEnd
