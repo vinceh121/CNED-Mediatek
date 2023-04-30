@@ -27,7 +27,7 @@ Therefore, the following components were used instead:
 
 GTK# is fully cross-platform, both as shared and static linking.
 MySql.Data lacks asynchronous methods, and lacks compatibility with other MySql forks compared to MySqlConnector.
-NSIS, while not being cross-platform (nor does it have any interest in being so), is a simple Win32 program and is easily runnable using Wine.
+NSIS is cross-platform and commonly used.
 Doxygen is fully crossplatform and commonly used.
 
 ## License
