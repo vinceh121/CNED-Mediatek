@@ -20,7 +20,7 @@ That is going past Mono's crude WPF implementation that remains unusable for a d
 SandCastle has been abandoned since 2012.
 
 Therefore, the following components were used instead:
- - GTK# as a UI framework
+ - GTKSharp as a UI framework
  - MySqlConnector as DBMS connector
  - Nullsoft Scriptable Install System as installer framework
  - Doxygen as API doc generator
