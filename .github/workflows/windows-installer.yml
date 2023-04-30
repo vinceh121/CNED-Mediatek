@@ -30,7 +30,7 @@ jobs:
       with:
         dotnet-version: ${{matrix.dotnetver}}
     - name: Install NSIS
-      run: curl -Lo nsis.exe https://downloads.sourceforge.net/project/nsis/NSIS%203/3.08/nsis-3.08-setup.exe\?ts\=gAAAAABkTqhlt8_k2YSnrRRbuddedOSdvuH5h6n-rbc_dmcD23ABrtLFQXEIRRptACed_rW6zgWtrzRzSQaeMImViXISO2Y22A%3D%3D\&r\=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fnsis%2Ffiles%2FNSIS%25203%2F3.08%2Fnsis-3.08-setup.exe%2Fdownload && ./nsis.exe /S
+      run: curl -Lo nsis.exe 'https://downloads.sourceforge.net/project/nsis/NSIS%203/3.08/nsis-3.08-setup.exe?ts=gAAAAABkTqhlt8_k2YSnrRRbuddedOSdvuH5h6n-rbc_dmcD23ABrtLFQXEIRRptACed_rW6zgWtrzRzSQaeMImViXISO2Y22A%3D%3D&r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fnsis%2Ffiles%2FNSIS%25203%2F3.08%2Fnsis-3.08-setup.exe%2Fdownload' && ./nsis.exe /S
 
     - name: Compile solution
       run: dotnet build -c ${{matrix.configuration}}
