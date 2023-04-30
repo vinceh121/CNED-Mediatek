@@ -189,26 +189,15 @@ namespace Mediatek
 				return;
 			}
 
-			// apparently ADO.NET doesn't have array parameters
-			// https://www.mikesdotnetting.com/article/116/parameterized-in-clauses-with-ado-net-and-linq
-			string[] parameters = new string[ids.Count];
-			for (int i = 0; i < parameters.Length; i++)
+			try
 			{
-				parameters[i] = "@id" + i;
+				MySqlCommand cmd = await this._mediatek.GetStaffController().Delete(ids);
 			}
-
-			using MySqlCommand cmd = new MySqlCommand("DELETE FROM personnel WHERE idpersonnel IN ("
-				+ String.Join(", ", parameters) + ");", this._mediatek.GetConnection());
-			for (int i = 0; i < ids.Count; i++)
-			{
-				cmd.Parameters.AddWithValue("@id" + i, ids[i]);
-			}
-			int affectedRows = await cmd.ExecuteNonQueryAsync();
-			if (affectedRows != ids.Count)
+			catch (Exception e)
 			{
 				MessageDialog diag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok,
-					false, "Error: deleted wrong number of rows, should've deleted {0} but actually deleted {1}",
-					new object[] { ids.Count, affectedRows });
+					false, "Error: {0}",
+					new object[] { e });
 				diag.Run();
 				diag.Destroy();
 				return;

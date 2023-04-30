@@ -1,4 +1,5 @@
 using MySqlConnector;
+using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -38,6 +39,33 @@ namespace Mediatek.Controllers
 				return null;
 			}
 			return EntityMapper.MapFromRow<Staff>(read);
+		}
+
+		public async Task<MySqlCommand> Delete(List<long> ids)
+		{
+			// apparently ADO.NET doesn't have array parameters
+			// https://www.mikesdotnetting.com/article/116/parameterized-in-clauses-with-ado-net-and-linq
+			string[] parameters = new string[ids.Count];
+			for (int i = 0; i < parameters.Length; i++)
+			{
+				parameters[i] = "@id" + i;
+			}
+
+			using MySqlCommand cmd = new MySqlCommand("DELETE FROM personnel WHERE idpersonnel IN ("
+				+ String.Join(", ", parameters) + ");", this._connection);
+			for (int i = 0; i < ids.Count; i++)
+			{
+				cmd.Parameters.AddWithValue("@id" + i, ids[i]);
+			}
+
+			int affectedRows = await cmd.ExecuteNonQueryAsync();
+
+			if (affectedRows != ids.Count)
+			{
+				throw new OperationCanceledException("Should have affected " + ids.Count + " rows, but actually affected " + affectedRows);
+			}
+
+			return cmd;
 		}
 
 		public override async Task<MySqlCommand> Insert(Staff entity)
