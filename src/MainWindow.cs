@@ -130,8 +130,10 @@ namespace Mediatek
 			else
 			{ // staff is set to be here today, add a leave for today
 				Leave leave = new Leave(-1, DateTime.Today, DateTime.Today.AddDays(1), id, 0); // FIXME need reason id
-				this._mediatek.GetLeaveController().Insert(leave);
+				await this._mediatek.GetLeaveController().Insert(leave);
 			}
+
+			this.RefreshLeaveCalendar();
 		}
 
 		private async void LeaveCreateActivated(object sender, EventArgs e)
