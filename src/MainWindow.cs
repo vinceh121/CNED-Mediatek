@@ -12,6 +12,7 @@ namespace Mediatek
 	public class MainWindow : ApplicationWindow
 	{
 		private Mediatek _mediatek;
+		[UI] private Notebook _notebook = null;
 		[UI] private Toolbar _toolbarStaff = null;
 		[UI] private Toolbar _toolbarLeave = null;
 		[UI] private TreeView _staffTree = null;
@@ -82,7 +83,7 @@ namespace Mediatek
 			ToolButton toolAddLeave = new ToolButton(null, "Ajouter absence");
 			toolAddLeave.Sensitive = true;
 			toolAddLeave.IconName = "document-new";
-			toolAddLeave.ActionName = "app.leaveCreate";
+			toolAddLeave.ActionName = "win.leaveCreate";
 			_toolbarLeave.Add(toolAddLeave);
 
 			ToolButton toolEditLeave = new ToolButton(null, "Modifier absence");
@@ -138,20 +139,29 @@ namespace Mediatek
 
 		private async void LeaveCreateActivated(object sender, EventArgs e)
 		{
-			List<long> ids = this.GetSelectedIds();
+			CreateLeaveDialog diag;
 
-			if (ids.Count != 1)
-			{
-				MessageDialog errDiag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok,
-					false, "Sélectionnez une personne seulement",
-					new object[0]);
-				errDiag.Run();
-				errDiag.Destroy();
-				return;
+			if (this._notebook.Page == 0)
+			{ // if we have the staff list open, use it for staff selection
+				List<long> ids = this.GetSelectedIds();
+
+				if (ids.Count != 1)
+				{
+					MessageDialog errDiag = new MessageDialog(this, DialogFlags.UseHeaderBar, MessageType.Error, ButtonsType.Ok,
+						false, "Sélectionnez une personne seulement",
+						new object[0]);
+					errDiag.Run();
+					errDiag.Destroy();
+					return;
+				}
+
+				Staff staff = await this._mediatek.GetStaffController().Get(ids[0]);
+				diag = new CreateLeaveDialog(this._mediatek, staff);
 			}
-
-			Staff staff = await this._mediatek.GetStaffController().Get(ids[0]);
-			CreateLeaveDialog diag = new CreateLeaveDialog(this._mediatek, staff);
+			else
+			{ // else use in-dialog combobox
+				diag = new CreateLeaveDialog(this._mediatek, null);
+			}
 			diag.ShowAll();
 			diag.TransientFor = this;
 		}

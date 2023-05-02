@@ -1,4 +1,4 @@
-using System;
+using System.Threading.Tasks;
 using Gtk;
 using UI = Gtk.Builder.ObjectAttribute;
 
@@ -13,13 +13,17 @@ namespace Mediatek.Dialogs
 		[UI] private Button _btnCreate = null;
 		[UI] private Button _btnCreateAndClose = null;
 		[UI] private Button _btnCancel = null;
-		[UI] private Entry _txtStaff = null;
 		[UI] private ComboBox _cbxReason = null;
 		[UI] private FlowBoxChild _boxDateStart = null;
 		[UI] private FlowBoxChild _boxDateEnd = null;
+		[UI] private ComboBoxText _cbxStaff = null;
 		private DateEntry _dateStart, _dateEnd;
 		private Staff _staff;
 
+		/// <param name="staff">
+		/// 	Nullable staff entity. If null, staff selection will be prompted,
+		/// 	else, the given staff will be used and selection will be disabled.
+		/// </param>
 		public CreateLeaveDialog(Mediatek program, Staff staff) : this(program, new Builder("CreateLeaveDialog.glade"), staff)
 		{
 		}
@@ -30,7 +34,17 @@ namespace Mediatek.Dialogs
 			this._program = program;
 			this._staff = staff;
 
-			this._txtStaff.Text = this._staff.FirstName + " " + this._staff.LastName;
+			if (staff != null)
+			{
+				this._cbxStaff.Sensitive = false;
+				this._cbxStaff.Append(this._staff.Id.ToString(), $"{this._staff.FirstName} {this._staff.LastName}");
+				this.LoadReasons().Start();
+			}
+			else
+			{
+				this.LoadAll();
+			}
+			this._cbxStaff.Active = 1; // select first by default
 
 			this._btnCancel.Clicked += (_, _) => this.Dispose();
 
@@ -49,18 +63,30 @@ namespace Mediatek.Dialogs
 				this.CreateLeave();
 				this.Dispose();
 			};
-
-			this.LoadReasons();
 		}
 
 		private async void CreateLeave()
 		{
-			Leave leave = new Leave(-1, this._dateStart.Date, this._dateEnd.Date, this._staff.Id, long.Parse(this._cbxReason.ActiveId));
+			Leave leave = new Leave(-1, this._dateStart.Date, this._dateEnd.Date, long.Parse(this._cbxStaff.ActiveId), long.Parse(this._cbxReason.ActiveId));
 			await this._program.GetLeaveController().Insert(leave);
 			this._program.GetMainWindow().RefreshLeaveCalendar();
 		}
 
-		private async void LoadReasons()
+		private async void LoadAll()
+		{
+			await this.LoadStaff();
+			await this.LoadReasons();
+		}
+
+		private async Task LoadStaff()
+		{
+			await foreach (Staff staff in this._program.GetStaffController().FetchAll())
+			{
+				this._cbxStaff.Append(staff.Id.ToString(), $"({staff.Id}) {staff.FirstName} {staff.LastName}");
+			}
+		}
+
+		private async Task LoadReasons()
 		{
 			ListStore store = new ListStore(GLib.GType.String, GLib.GType.String);
 

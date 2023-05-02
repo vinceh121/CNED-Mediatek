@@ -27,7 +27,7 @@ MediaTek, un exercice d'application métier
     <property name="default-height">240</property>
     <property name="icon-name">applications-accessories</property>
     <child>
-      <object class="GtkNotebook">
+      <object class="GtkNotebook" id="_notebook">
         <property name="visible">True</property>
         <property name="can-focus">True</property>
         <child>
