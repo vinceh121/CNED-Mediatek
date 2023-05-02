@@ -41,6 +41,7 @@ namespace Mediatek
 		private LeaveController _leaveController;
 		private ManagerController _managerController;
 		private ReasonController _reasonController;
+		private ServiceController _serviceController;
 
 		[STAThread]
 		public static void Main(string[] args)
@@ -139,6 +140,7 @@ namespace Mediatek
 			this._staffController = new StaffController(this);
 			this._leaveController = new LeaveController(this);
 			this._reasonController = new ReasonController(this);
+			this._serviceController = new ServiceController(this);
 
 			// trigger LoggedIn event
 			this.LoggedIn?.Invoke(this, null);
@@ -213,6 +215,11 @@ namespace Mediatek
 		public ReasonController GetReasonController()
 		{
 			return this._reasonController;
+		}
+
+		public ServiceController GetServiceController()
+		{
+			return this._serviceController;
 		}
 
 		public static void ShowAbout(Window transientFor)

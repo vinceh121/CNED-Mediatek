@@ -56,12 +56,10 @@ namespace Mediatek.Dialogs
 		{
 			ListStore store = new ListStore(GLib.GType.String, GLib.GType.String);
 
-			using MySqlCommand cmd = new MySqlCommand("SELECT idservice, nom FROM service;", this._mediatek.GetConnection());
-			using MySqlDataReader read = await cmd.ExecuteReaderAsync();
-			while (await read.ReadAsync())
+			await foreach (Service service in this._mediatek.GetServiceController().FetchAll())
 			{
-				this._serviceNames.Add(read.GetInt64("idservice"), read.GetString("nom"));
-				store.AppendValues(read.GetString("nom"), read.GetInt64("idservice").ToString());
+				this._serviceNames.Add(service.Id, service.Name);
+				store.AppendValues(service.Name, service.Id.ToString());
 			}
 			this._cbxService.Model = store;
 
@@ -74,20 +72,12 @@ namespace Mediatek.Dialogs
 
 			this._cbxService.Sensitive = true;
 
-			// need to dispose before the call to LoadStaff cause the
-			// using statements won't trigger it until the return of LoadServicesAndStaff
-			await read.DisposeAsync();
-			await cmd.DisposeAsync();
 			this.LoadStaff();
 		}
 
 		private async void LoadStaff()
 		{
-			using MySqlCommand cmdStaff = new MySqlCommand("SELECT * FROM personnel WHERE idpersonnel=@id;", this._mediatek.GetConnection());
-			cmdStaff.Parameters.AddWithValue("id", this._editingId);
-			using MySqlDataReader readStaff = await cmdStaff.ExecuteReaderAsync();
-			await readStaff.ReadAsync();
-			this._editing = EntityMapper.MapFromRow<Staff>(readStaff);
+			this._editing = await this._mediatek.GetStaffController().Get(this._editingId);
 
 			this._txtLastName.Text = this._editing.LastName;
 			this._txtFirstName.Text = this._editing.FirstName;

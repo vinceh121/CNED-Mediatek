@@ -64,12 +64,10 @@ namespace Mediatek.Dialogs
 			// for some reason GTK requires the IdColumn to be a string, so we ToString and then Parse the ID
 			ListStore store = new ListStore(GLib.GType.String, GLib.GType.String);
 
-			using MySqlCommand cmd = new MySqlCommand("SELECT idservice, nom FROM service;", this._mediatek.GetConnection());
-			using MySqlDataReader read = await cmd.ExecuteReaderAsync();
-			while (await read.ReadAsync())
+			await foreach (Service service in this._mediatek.GetServiceController().FetchAll())
 			{
-				this._serviceNames.Add(read.GetInt64("idservice"), read.GetString("nom"));
-				store.AppendValues(read.GetString("nom"), read.GetInt64("idservice").ToString());
+				this._serviceNames.Add(service.Id, service.Name);
+				store.AppendValues(service.Name, service.Id.ToString());
 			}
 			this._cbxService.Model = store;
 
