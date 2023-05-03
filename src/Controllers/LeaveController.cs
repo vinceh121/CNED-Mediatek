@@ -44,9 +44,33 @@ namespace Mediatek.Controllers
 			using MySqlCommand cmd = new MySqlCommand("SELECT * FROM absences "
 				+ "INNER JOIN personnel ON personnel.idpersonnel = absences.idpersonnel "
 				+ "INNER JOIN motif ON motif.idmotif = absences.idmotif "
+				+ "WHERE @day <= datefin AND @endday >= datedebut AND personnel.idpersonnel = @staffId;", this._connection);
+			cmd.Parameters.AddWithValue("staffId", staffId);
+			cmd.Parameters.AddWithValue("day", date);
+			cmd.Parameters.AddWithValue("endday", date.AddDays(1));
+
+			using MySqlDataReader reader = await cmd.ExecuteReaderAsync();
+
+			while (await reader.ReadAsync())
+			{
+				Leave leave = EntityMapper.MapFromRow<Leave>(reader);
+				leave.Staff = EntityMapper.MapFromRow<Staff>(reader);
+				leave.Reason = EntityMapper.MapFromRow<Reason>(reader);
+
+				yield return leave;
+			}
+		}
+
+		public async IAsyncEnumerable<Leave> FetchForDay(DateTime date)
+		{
+			Debug.Assert(date.Hour == 0 && date.Minute == 0 && date.Second == 0, "DateTime doesn't represent only a day of month");
+
+			using MySqlCommand cmd = new MySqlCommand("SELECT * FROM absences "
+				+ "INNER JOIN personnel ON personnel.idpersonnel = absences.idpersonnel "
+				+ "INNER JOIN motif ON motif.idmotif = absences.idmotif "
 				+ "WHERE @day <= datefin AND @endday >= datedebut;", this._connection);
 			cmd.Parameters.AddWithValue("day", date);
-			cmd.Parameters.AddWithValue("day", date.AddDays(1));
+			cmd.Parameters.AddWithValue("endday", date.AddDays(1));
 
 			using MySqlDataReader reader = await cmd.ExecuteReaderAsync();
 
@@ -108,9 +132,9 @@ namespace Mediatek.Controllers
 		public override async Task<MySqlCommand> Update(Leave entity)
 		{
 			MySqlCommand cmd = new MySqlCommand(
-				"UPDATE absences SET datedebut=@datedebut, datefin=@datedebut, "
+				"UPDATE absences SET datedebut=@datedebut, datefin=@datefin, "
 				+ "idpersonnel=@idpersonnel, idmotif=@idmotif "
-				+ " WHERE id=@id;",
+				+ " WHERE idabsence=@id;",
 				this._mediatek.GetConnection());
 
 			cmd.Parameters.AddWithValue("id", entity.Id);

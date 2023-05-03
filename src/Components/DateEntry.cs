@@ -16,10 +16,7 @@ namespace Mediatek.Components
 
 			this.SecondaryIconName = "appointment-soon";
 			this.SecondaryIconSensitive = true;
-			this.IconPress += (_, _) =>
-			{
-				this._popover.ShowAll();
-			};
+			this.IconPress += (_, _) => this._popover.ShowAll();
 
 			this._calendar.DaySelectedDoubleClick += (_, _) =>
 			{
@@ -33,6 +30,11 @@ namespace Mediatek.Components
 			get
 			{
 				return DateTime.Parse(this.Text);
+			}
+
+			set
+			{
+				this.Text = value.ToString();
 			}
 		}
 	}

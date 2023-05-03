@@ -56,6 +56,18 @@ namespace Mediatek
 			actionCreateLeave.Enabled = false;
 			this.Application.SetAccelsForAction("win.leaveCreate", new string[] { "<Ctrl><Shift>N" });
 			this.AddAction(actionCreateLeave);
+
+			GLib.SimpleAction actionEditLeave = new GLib.SimpleAction("leaveEdit", null);
+			actionEditLeave.Activated += LeaveEditActivated;
+			actionEditLeave.Enabled = false;
+			this.Application.SetAccelsForAction("win.leaveEdit", new string[] { "<Ctrl><Shift>E" });
+			this.AddAction(actionEditLeave);
+
+			GLib.SimpleAction actionDeleteLeave = new GLib.SimpleAction("leaveDelete", null);
+			// actionDeleteLeave.Activated += LeaveCreateActivated;
+			actionDeleteLeave.Enabled = false;
+			this.Application.SetAccelsForAction("win.leaveDelete", new string[] { "<Shift>Delete", "<Ctrl><Shift>D" });
+			this.AddAction(actionDeleteLeave);
 		}
 
 		private void CreateToolBars()
@@ -164,6 +176,38 @@ namespace Mediatek
 			}
 			diag.ShowAll();
 			diag.TransientFor = this;
+		}
+
+		private async void LeaveEditActivated(object sender, EventArgs e)
+		{
+			List<Leave> leaves = new List<Leave>();
+			await foreach (Leave l in this._mediatek.GetLeaveController().FetchForDay(this._leaveCalendar.Date)) leaves.Add(l);
+
+			Leave leave;
+			if (leaves.Count == 0)
+			{
+				MessageDialog diag = new MessageDialog(this, DialogFlags.Modal, MessageType.Error,
+					ButtonsType.Ok, "Aucune absence pour le jour sélectionné", new object[] { });
+				diag.Run();
+				diag.Destroy();
+				return;
+			}
+			else if (leaves.Count == 1)
+			{
+				leave = leaves[0];
+			}
+			else
+			{
+				LeaveSelectDialog diag = new LeaveSelectDialog(this._mediatek, leaves);
+				diag.ShowAll();
+				diag.Run();
+
+				leave = diag.SelectedLeave;
+			}
+
+			EditLeaveDialog editDiag = new EditLeaveDialog(this._mediatek, leave);
+			editDiag.ShowAll();
+			editDiag.Run();
 		}
 
 		private void StaffEditActivated(object sender, EventArgs e)
