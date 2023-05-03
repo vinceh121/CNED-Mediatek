@@ -305,6 +305,7 @@ namespace Mediatek
 			this._currentMonth = new DateTime(selected.Year, selected.Month, 1);
 
 			int daysInMonth = DateTime.DaysInMonth(this._currentMonth.Year, this._currentMonth.Month);
+			DateTime lastDayOfMonth= this._currentMonth.AddDays(daysInMonth);
 
 			this._calendarDetails = new ISet<string>[daysInMonth];
 
@@ -325,7 +326,7 @@ namespace Mediatek
 
 				// ditto for end
 				int monthEnd;
-				if (leave.End > this._currentMonth)
+				if (leave.End > lastDayOfMonth)
 				{
 					monthEnd = daysInMonth;
 				}
