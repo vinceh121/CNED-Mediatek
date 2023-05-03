@@ -10,6 +10,33 @@ using Mediatek.Dialogs;
 
 namespace Mediatek
 {
+	/// <summary>
+	/// GLib signals:
+	/// <list type="bullet">
+	/// <item>
+	/// <term>staffDelete</term>
+	/// <description>Shows the staff deletion dialog on the selected staff member</description>
+	/// </item>
+	/// <item>
+	/// <term>staffEdit</term>
+	/// <description>Shows the staff edition dialog on the selected staff member</description>
+	/// </item>
+	/// <item>
+	/// <term>leaveCreate</term>
+	/// <description>Shows the leave creation dialog for the selected staff member</description>
+	/// </item>
+	/// <item>
+	/// <term>leaveEdit</term>
+	/// <description>Shows the edit leave dialog for the selected leave</description>
+	/// </item>
+	/// <term>leaveDelete</term>
+	/// <description>Shows the leave deletion dialog for the selected leave</description>
+	/// </item>
+	/// <term>refresh</term>
+	/// <description>Refreshes the staff list and leave calendar</description>
+	/// </item>
+	/// </list>
+	/// </summary>
 	public class MainWindow : ApplicationWindow
 	{
 		private Mediatek _mediatek;
