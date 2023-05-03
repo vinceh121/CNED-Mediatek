@@ -69,6 +69,12 @@ namespace Mediatek
 			actionDeleteLeave.Enabled = false;
 			this.Application.SetAccelsForAction("win.leaveDelete", new string[] { "<Shift>Delete", "<Ctrl><Shift>D" });
 			this.AddAction(actionDeleteLeave);
+
+			GLib.SimpleAction actionRefresh = new GLib.SimpleAction("refresh", null);
+			actionRefresh.Activated += async (_, _) => await this.RefreshData();
+			actionRefresh.Enabled = false;
+			this.Application.SetAccelsForAction("win.refresh", new string[] { "F5", "<Ctrl>r" });
+			this.AddAction(actionRefresh);
 		}
 
 		private void CreateToolBars()

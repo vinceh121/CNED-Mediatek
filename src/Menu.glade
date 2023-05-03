@@ -27,6 +27,10 @@ MediaTek, un exercice d'application métier
         <attribute name="action">app.loginDialog</attribute>
       </item>
       <item>
+        <attribute name="label" translatable="yes">_Rafraichir</attribute>
+        <attribute name="action">win.refresh</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">_Quitter</attribute>
         <attribute name="action">app.quit</attribute>
       </item>
