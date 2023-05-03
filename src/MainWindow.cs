@@ -64,7 +64,7 @@ namespace Mediatek
 			this.AddAction(actionEditLeave);
 
 			GLib.SimpleAction actionDeleteLeave = new GLib.SimpleAction("leaveDelete", null);
-			// actionDeleteLeave.Activated += LeaveCreateActivated;
+			actionDeleteLeave.Activated += LeaveDeleteActivated;
 			actionDeleteLeave.Enabled = false;
 			this.Application.SetAccelsForAction("win.leaveDelete", new string[] { "<Shift>Delete", "<Ctrl><Shift>D" });
 			this.AddAction(actionDeleteLeave);
@@ -210,6 +210,44 @@ namespace Mediatek
 			editDiag.Run();
 		}
 
+		private async void LeaveDeleteActivated(object sender, EventArgs e)
+		{
+			List<Leave> leaves = new List<Leave>();
+			await foreach (Leave l in this._mediatek.GetLeaveController().FetchForDay(this._leaveCalendar.Date)) leaves.Add(l);
+
+			Leave leave;
+			if (leaves.Count == 0)
+			{
+				MessageDialog diag = new MessageDialog(this, DialogFlags.Modal, MessageType.Error,
+					ButtonsType.Ok, "Aucune absence pour le jour sélectionné", new object[] { });
+				diag.Run();
+				diag.Destroy();
+				return;
+			}
+			else if (leaves.Count == 1)
+			{
+				leave = leaves[0];
+			}
+			else
+			{
+				LeaveSelectDialog diag = new LeaveSelectDialog(this._mediatek, leaves);
+				diag.ShowAll();
+				diag.Run();
+
+				leave = diag.SelectedLeave;
+			}
+
+			MessageDialog confirm = new MessageDialog(this, DialogFlags.Modal, MessageType.Question, ButtonsType.OkCancel,
+				true, "Supprimer l'absence de {0} {1} de {2} à {3} pour cause de {4} ?",
+				new object[] { leave.Staff.LastName, leave.Staff.FirstName, leave.Start, leave.End, leave.Reason.label });
+			int res = confirm.Run();
+			confirm.Dispose();
+			if (res == -5) {
+				await this._mediatek.GetLeaveController().Delete(leave);
+				this.RefreshLeaveCalendar();
+			}
+		}
+
 		private void StaffEditActivated(object sender, EventArgs e)
 		{
 			List<long> ids = this.GetSelectedIds();
@@ -305,7 +343,7 @@ namespace Mediatek
 			this._currentMonth = new DateTime(selected.Year, selected.Month, 1);
 
 			int daysInMonth = DateTime.DaysInMonth(this._currentMonth.Year, this._currentMonth.Month);
-			DateTime lastDayOfMonth= this._currentMonth.AddDays(daysInMonth);
+			DateTime lastDayOfMonth = this._currentMonth.AddDays(daysInMonth);
 
 			this._calendarDetails = new ISet<string>[daysInMonth];
 
