@@ -69,7 +69,7 @@ namespace Mediatek.Dialogs
 		{
 			Leave leave = new Leave(-1, this._dateStart.Date, this._dateEnd.Date, long.Parse(this._cbxStaff.ActiveId), long.Parse(this._cbxReason.ActiveId));
 			await this._program.GetLeaveController().Insert(leave);
-			this._program.GetMainWindow().RefreshLeaveCalendar();
+			await this._program.GetMainWindow().RefreshData();
 		}
 
 		private async void LoadAll()

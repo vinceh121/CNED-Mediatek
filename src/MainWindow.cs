@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Gtk;
 using MySqlConnector;
@@ -135,18 +136,32 @@ namespace Mediatek
 
 			if (tgl.Active)
 			{ // staff is set to be missing today, cut all today's leave
-				await foreach (Leave l in this._mediatek.GetLeaveController().FetchForDay(DateTime.Today, id))
+			  // need to accumulate the entire list into, because MySqlConnector's "one command at a time rule" will fail otherwise with an await-foreach
+				List<Leave> leaves = await Utils.ToArray(this._mediatek.GetLeaveController().FetchForDay(DateTime.Today, id));
+				foreach (Leave l in leaves)
 				{
-					this._mediatek.GetLeaveController().RemoveDay(DateTime.Today, l);
+					await this._mediatek.GetLeaveController().RemoveDay(DateTime.Today, l);
 				}
 			}
 			else
 			{ // staff is set to be here today, add a leave for today
-				Leave leave = new Leave(-1, DateTime.Today, DateTime.Today.AddDays(1), id, 0); // FIXME need reason id
+				List<Reason> reasons = new List<Reason>();
+				await foreach (Reason reason in this._mediatek.GetReasonController().FetchAll())
+					reasons.Add(reason);
+
+				ReasonSelectDialog resDiag = new ReasonSelectDialog(this._mediatek, reasons);
+				resDiag.Run();
+
+				if (resDiag.SelectedReason == null)
+				{
+					return;
+				}
+
+				Leave leave = new Leave(-1, DateTime.Today, DateTime.Today.AddDays(1).AddMinutes(-1), id, resDiag.SelectedReason.Id);
 				await this._mediatek.GetLeaveController().Insert(leave);
 			}
 
-			this.RefreshLeaveCalendar();
+			await this.RefreshData();
 		}
 
 		private async void LeaveCreateActivated(object sender, EventArgs e)
@@ -234,6 +249,11 @@ namespace Mediatek
 				diag.ShowAll();
 				diag.Run();
 
+				if (diag.SelectedLeave == null)
+				{
+					return;
+				}
+
 				leave = diag.SelectedLeave;
 			}
 
@@ -242,9 +262,10 @@ namespace Mediatek
 				new object[] { leave.Staff.LastName, leave.Staff.FirstName, leave.Start, leave.End, leave.Reason.label });
 			int res = confirm.Run();
 			confirm.Dispose();
-			if (res == -5) {
+			if (res == -5)
+			{
 				await this._mediatek.GetLeaveController().Delete(leave);
-				this.RefreshLeaveCalendar();
+				await this.RefreshData();
 			}
 		}
 
@@ -305,6 +326,21 @@ namespace Mediatek
 
 		private async void LoggedInActivated(object sender, EventArgs e)
 		{
+			await this.RefreshData();
+
+			// add calender event listeners only after we have a connection
+			this._leaveCalendar.MonthChanged += async (_, _) => await this.RefreshLeaveCalendar();
+			this._leaveCalendar.DetailFunc = this.CalendarDetail;
+		}
+
+		public async Task RefreshData()
+		{
+			await this.RefreshStaffList();
+			await this.RefreshLeaveCalendar();
+		}
+
+		public async Task RefreshStaffList()
+		{
 			ListStore model = new ListStore(GLib.GType.Int64, GLib.GType.String, GLib.GType.String, GLib.GType.String,
 				GLib.GType.String, GLib.GType.String, GLib.GType.Boolean);
 			this._staffTree.Model = model;
@@ -313,12 +349,6 @@ namespace Mediatek
 			{
 				this.AppendStaff((Staff)staff);
 			}
-
-			this.RefreshLeaveCalendar();
-
-			// add calender event listeners only after we have a connection
-			this._leaveCalendar.MonthChanged += (_, _) => this.RefreshLeaveCalendar();
-			this._leaveCalendar.DetailFunc = this.CalendarDetail;
 		}
 
 		private string CalendarDetail(Calendar calendar, uint year, uint month, uint day)
@@ -333,7 +363,7 @@ namespace Mediatek
 			return String.Join("\n", this._calendarDetails[day - 1]);
 		}
 
-		public async void RefreshLeaveCalendar()
+		public async Task RefreshLeaveCalendar()
 		{
 			this._leaveCalendar.Sensitive = false;
 

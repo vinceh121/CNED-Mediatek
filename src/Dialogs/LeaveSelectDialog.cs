@@ -35,6 +35,7 @@ namespace Mediatek.Dialogs
 			this._btnOk.Clicked += (_, _) =>
 			{
 				this.SelectedLeave = this._leavesDict.GetValueOrDefault(long.Parse(this._cbxLeaves.ActiveId));
+				this.Destroy();
 			};
 		}
 	}

@@ -84,14 +84,17 @@ namespace Mediatek.Controllers
 			}
 		}
 
-		public async void RemoveDay(DateTime date, Leave leave)
+		public async Task RemoveDay(DateTime date, Leave leave)
 		{
 			Debug.Assert(date.Hour == 0 && date.Minute == 0 && date.Second == 0, "DateTime doesn't represent only a day of month");
 
 			await this.Delete(leave);
 
-			Leave begin = leave with { End = date };
+			Leave begin = leave with { End = date.AddMinutes(-1) };
 			Leave end = leave with { Start = date.AddDays(1) };
+
+			Debug.Assert(begin.Start < begin.End);
+			Debug.Assert(end.Start < end.End);
 
 			await this.Insert(begin);
 			await this.Insert(end);
