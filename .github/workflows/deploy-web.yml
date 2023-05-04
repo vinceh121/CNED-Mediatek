@@ -14,9 +14,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install deps
-      run: sudo apt-get update && sudo apt-get install doxygen graphviz
+      run: sudo apt-get update && sudo apt-get install doxygen graphviz libreoffice
     - name: Run Doxygen
       run: doxygen
+    - name: Convert report to PDF
+      run: libreoffice --headless --convert-to pdf --outdir www www/CompteRenduDActivite.fodt
     - name: Deploy
       uses: appleboy/scp-action@master
       with:
