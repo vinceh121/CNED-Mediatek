@@ -54,6 +54,6 @@ jobs:
 
     - name: Release
       uses: softprops/action-gh-release@v1 # apparently the official action for making a GH release is deprecated
-      if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/') # only for tags
       with:
         files: mediatek-installer.exe
