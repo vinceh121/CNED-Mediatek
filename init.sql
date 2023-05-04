@@ -45,4 +45,4 @@ INSERT INTO motif (libelle) VALUES ("Vacances"),("Maladie"),("Motif familial"),(
 
 -- default admin user
 -- default password: Tj7WDuvIHXUb
-INSERT INTO responsable (login, pwd) VALUES ("manager", "9eec3b1d166aad069128af7bef229b672b5688ec2b9a65052d51af5f00c5f0e0");
+INSERT INTO responsable (login, pwd) VALUES ("manager", "Xq0UDOyJjEdQZ5fzvWB$DWgq2V9kgYXDXt5Cf4rSyBHydTlxvoSDvVCAUx/COVo=");
