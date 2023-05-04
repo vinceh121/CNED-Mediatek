@@ -52,6 +52,16 @@ namespace Mediatek.Dialogs
 			// default to None
 			this._cbxSslMode.Active = 0;
 
+			// because I couldn't figure out how to make the "default" GTKDialog button work.
+			this.KeyReleaseEvent += (sender, args) =>
+			{
+				if (args.Event.Key == Gdk.Key.Return)
+				{
+					this.LoginActivated(sender, args);
+				}
+			};
+
+
 			_btnLogin.Clicked += this.LoginActivated;
 			_btnCancel.Clicked += (_, _) => this.Destroy();
 		}
