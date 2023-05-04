@@ -224,6 +224,11 @@ namespace Mediatek
 			return this._serviceController;
 		}
 
+		public ManagerController GetManagerController()
+		{
+			return this._managerController;
+		}
+
 		public static void ShowAbout(Window transientFor)
 		{
 			AboutDialog dialog = new AboutDialog
