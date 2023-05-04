@@ -17,14 +17,16 @@ namespace Mediatek.Dialogs
 		[UI] private Entry _txtManagerUsername = null;
 		[UI] private Entry _txtManagerPassword = null;
 
-		public LoginDialog(Mediatek program) : this(new Builder("LoginDialog.glade"))
+		public LoginDialog(Mediatek program) : this(new Builder("LoginDialog.glade")) // GtkBuilder reads and creates
+																					  // the objects defined in the Glade XML
 		{
 			this._program = program;
 		}
 
-		private LoginDialog(Builder builder) : base(builder.GetRawOwnedObject("LoginDialog"))
+		private LoginDialog(Builder builder) : base(builder.GetRawOwnedObject("LoginDialog")) // Get the pointer of the native Dialog,
+																							  // and make it correspond to this C# class
 		{
-			builder.Autoconnect(this);
+			builder.Autoconnect(this); // calls for the fields with the UI attribute to be filled
 
 			ListStore model = new ListStore(GLib.GType.String, GLib.GType.String);
 
