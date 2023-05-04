@@ -95,6 +95,7 @@ namespace Mediatek.Controllers
 				+ "WHERE idpersonnel=@id;",
 				this._mediatek.GetConnection());
 
+			cmd.Parameters.AddWithValue("id", entity.Id);
 			cmd.Parameters.AddWithValue("nom", entity.LastName);
 			cmd.Parameters.AddWithValue("prenom", entity.FirstName);
 			cmd.Parameters.AddWithValue("tel", entity.Phone);
