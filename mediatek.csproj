@@ -3,6 +3,12 @@
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net7.0</TargetFramework>
+
+		<Version>0.1.0</Version>
+		<Author>vinceh121</Author>
+		<Product>MediaTek86 Application Responsable</Product>
+		<Description>Un exercice d'application métier.</Description>
+		<Copyright>Copyright (C) 2023 Vincent Hyvert, Licensed under GNU GPL V3.0</Copyright>
 	</PropertyGroup>
 
 	<ItemGroup>
