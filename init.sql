@@ -43,3 +43,6 @@ CREATE TABLE IF NOT EXISTS absences (
 INSERT INTO service (nom) VALUES ("Administratif"),("Médiation culturelle"),("Prêt");
 INSERT INTO motif (libelle) VALUES ("Vacances"),("Maladie"),("Motif familial"),("Congé parental");
 
+-- default admin user
+-- default password: Tj7WDuvIHXUb
+INSERT INTO responsable (login, pwd) VALUES ("manager", "9eec3b1d166aad069128af7bef229b672b5688ec2b9a65052d51af5f00c5f0e0");
