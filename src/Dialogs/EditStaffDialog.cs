@@ -97,8 +97,10 @@ namespace Mediatek.Dialogs
 
 			staff.Service = this._serviceNames.GetValueOrDefault(staff.IdService);
 
-			using MySqlCommand cmd = await this._mediatek.GetStaffController().Update(staff);
+			MySqlCommand cmd = await this._mediatek.GetStaffController().Update(staff);
+			await cmd.DisposeAsync();
 
+			await this._mediatek.GetMainWindow().RefreshData();
 			this.Destroy();
 		}
 	}
