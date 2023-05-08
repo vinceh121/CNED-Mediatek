@@ -67,7 +67,15 @@ namespace Mediatek.Dialogs
 
 		private async void CreateLeave()
 		{
-			Leave leave = new Leave(-1, this._dateStart.Date, this._dateEnd.Date, long.Parse(this._cbxStaff.ActiveId), long.Parse(this._cbxReason.ActiveId));
+			if (this._cbxStaff.ActiveId == null) {
+				MessageDialog diag = new MessageDialog(this, DialogFlags.Modal, MessageType.Error,
+					ButtonsType.Ok, false, "Sélectionnez un personnel", new object[0]);
+				diag.Run();
+				diag.Dispose();
+				return;
+			}
+			Leave leave = new Leave(-1, this._dateStart.Date, this._dateEnd.Date,
+				long.Parse(this._cbxStaff.ActiveId), long.Parse(this._cbxReason.ActiveId));
 			await this._program.GetLeaveController().Insert(leave);
 			await this._program.GetMainWindow().RefreshData();
 		}
