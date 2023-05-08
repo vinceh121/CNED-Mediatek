@@ -349,12 +349,9 @@ namespace Mediatek
 				return;
 			}
 
-			// delete in db worked, now delete in ui
-			TreePath[] paths = this._staffTree.Selection.GetSelectedRows();
-			foreach (TreePath p in paths)
-			{
-				this._staffTree.Model.EmitRowDeleted(p);
-			}
+			// manually deleting the tree items works badly with GtkSharp.
+			// in fact the entire binding of the RB Tree is buggy.
+			await this.RefreshData();
 		}
 
 		private async void LoggedInActivated(object sender, EventArgs e)
