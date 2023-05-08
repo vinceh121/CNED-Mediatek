@@ -29,9 +29,11 @@ namespace Mediatek
 	/// <term>leaveEdit</term>
 	/// <description>Shows the edit leave dialog for the selected leave</description>
 	/// </item>
+	/// <item>
 	/// <term>leaveDelete</term>
 	/// <description>Shows the leave deletion dialog for the selected leave</description>
 	/// </item>
+	/// <item>
 	/// <term>refresh</term>
 	/// <description>Refreshes the staff list and leave calendar</description>
 	/// </item>
