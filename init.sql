@@ -45,4 +45,7 @@ INSERT INTO motif (libelle) VALUES ("Vacances"),("Maladie"),("Motif familial"),(
 
 -- default admin user
 -- default password: Tj7WDuvIHXUb
+-- password hash format: salt$b64hash
+-- salt is a pseudo-random 19 char string
+-- hash is SHA256 encoded in base64
 INSERT INTO responsable (login, pwd) VALUES ("manager", "Xq0UDOyJjEdQZ5fzvWB$DWgq2V9kgYXDXt5Cf4rSyBHydTlxvoSDvVCAUx/COVo=");
