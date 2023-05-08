@@ -490,15 +490,5 @@ namespace Mediatek
 
 			return ids;
 		}
-
-		private static Label TableLabel(string text)
-		{
-			Label lbl = new Label(text);
-			// huh??? why isn't this the default
-			lbl.Visible = true;
-			lbl.Selectable = true;
-			lbl.Xalign = 0;
-			return lbl;
-		}
 	}
 }
