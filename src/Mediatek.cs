@@ -107,6 +107,8 @@ namespace Mediatek
 		/// <param name="password">MySql password</param>
 		/// <param name="database">MySql database</param>
 		/// <param name="sslMode">Connection SSL policy</param>
+		/// <param name="managerUsername">Manager username</param>
+		/// <param name="managerPassword">Manager password</param>
 		public async Task Login(string host, string username, string password, string database, MySqlSslMode sslMode,
 			string managerUsername, string managerPassword)
 		{
